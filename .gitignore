@@ -1,0 +1,27 @@
+# ignore all files in any directory named venv
+venv/
+.venv/
+
+# ignore all files in any directory named .idea
+.idea/
+
+# ignore all .DS_Store files
+.DS_Store
+.DS_Store/
+*.DS_Store
+
+# ignore all files in any directory named book
+book/
+
+# ignore all .csv files
+*.csv
+
+# ignore all files
+*.html
+*.zip
+*.pdf
+
+.test/
+test/
+.vscode/
+vscode/
