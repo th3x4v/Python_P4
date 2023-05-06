@@ -25,3 +25,4 @@ book/
 test/
 .vscode/
 vscode/
+__pycache__/
