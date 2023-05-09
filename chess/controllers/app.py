@@ -20,7 +20,8 @@ class AppController:
 
             if choice == "1":
                 # Player management
-                print("player management")
+                print("Player Management")
+                print("")
                 player.start()
 
             if choice == "2":
