@@ -1,6 +1,7 @@
 from chess.views.view_menu import Views
 from chess.views.view_player import ViewsPlayer
 from chess.controllers.player import PlayerController
+from chess.controllers.tournament import TournamentController
 
 
 class AppController:
@@ -9,10 +10,11 @@ class AppController:
     def __init__(self):
         self.views = Views()
         self.playerviews = ViewsPlayer()
+        self.player_controller = PlayerController()
 
     def start(self):
         """Display main menu and user choice"""
-        player = PlayerController()
+       
         exit_requested = False
 
         while not exit_requested:
@@ -22,11 +24,13 @@ class AppController:
                 # Player management
                 print("Player Management")
                 print("")
-                player.start()
+                self.player_controller.start()
 
             if choice == "2":
                 # Tournament management
                 print("Tournament management")
+                print("")
+                tournament.start()
 
             if choice == "3":
                 # exit
