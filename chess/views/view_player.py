@@ -72,7 +72,7 @@ class ViewsPlayer:
 
         return player_data
 
-    def display_modify_player(self):
+    def get_modify_player(self):
         """Modify a player"""
         id = int(
             input(

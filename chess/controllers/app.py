@@ -11,10 +11,11 @@ class AppController:
         self.views = Views()
         self.playerviews = ViewsPlayer()
         self.player_controller = PlayerController()
+        self.tournament_controller = TournamentController()
 
     def start(self):
         """Display main menu and user choice"""
-       
+
         exit_requested = False
 
         while not exit_requested:
@@ -30,7 +31,7 @@ class AppController:
                 # Tournament management
                 print("Tournament management")
                 print("")
-                tournament.start()
+                self.tournament_controller.start()
 
             if choice == "3":
                 # exit
