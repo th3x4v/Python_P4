@@ -99,8 +99,10 @@ class TournamentController:
         tournament.current_round_num = tournament.current_round_num + 1
         name = "Round" + str(tournament.current_round_num)
         start_date = ""
-        match_list = self.set_match(tournament)
-        round: Round = Round(name=name, start_date=start_date, match_list=match_list)
+        match = self.set_match(tournament)
+        round: Round = Round(
+            name=name, start_date=start_date, match_list=match[0], match_played=match[1]
+        )
         tournament.rounds.append(round.__dict__)
         serialized_tournament = tournament.serialize_tournament()
         tournament.update_tournament_database(serialized_tournament, [id + 1])
@@ -108,14 +110,38 @@ class TournamentController:
     def set_match(self, tournament: Tournament):
         """Match creation"""
         l = len(tournament.players)
-        match_played = []
+        if tournament.current_round_num == 1:
+            match_played = []
+        else:
+            match_played = tournament.rounds[tournament.current_round_num - 2][
+                "match_played"
+            ]
         match_list = []
-        for round in tournament.rounds:
-            match_played.append(round["match_list"])
+        # for round in tournament.rounds:
+        #    match_played.append(round["match_list"])
         for i in range(0, l, 2):
             player_pairs = [(tournament.players[i], tournament.players[l - i - 1])]
-            match_list.append(player_pairs)
-        print(match_played)
+            n = i
+            while player_pairs in match_played:
+                print("match already played")
+                tournament_temp = tournament
+                player_pairs = [
+                    (tournament_temp.players[i], tournament_temp.players[l - n - 2])
+                ]
+                (
+                    tournament_temp.players[l - n - 2],
+                    tournament_temp.players[l - i - 1],
+                ) = (
+                    tournament_temp.players[l - i - 1],
+                    tournament_temp.players[l - n - 2],
+                )
+                n += 1
+                if n == l - i:
+                    break
+                tournament = tournament_temp
 
-        # if player_pairs in match_played:
-        return match_list
+            match_list.append(player_pairs)
+            match_played.append(player_pairs)
+            print(len(match_played))
+
+        return match_list, match_played

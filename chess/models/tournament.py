@@ -76,12 +76,13 @@ class Tournament:
 class Round:
     """Round description"""
 
-    def __init__(self, name, start_date, match_list, end_date=""):
+    def __init__(self, name, start_date, match_list, end_date="",match_played="" ):
         """Round initialization"""
         self.name = name
         self.start_date = start_date
         self.end_date = end_date
         self.match_list = match_list
+        self.match_played = match_played
 
 
 class Match:
