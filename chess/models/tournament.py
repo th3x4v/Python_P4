@@ -1,9 +1,13 @@
 from chess.models.player import Player
+from chess.models.round import Round
 from tinydb import TinyDB
+from chess.database.database import TinyTableManager, tournament_database
 
 
 class Tournament:
     """tournament description"""
+
+    table: TinyTableManager = tournament_database
 
     def __init__(
         self,
@@ -16,6 +20,7 @@ class Tournament:
         rounds=None,
         players=None,
         director_notes="",
+        id=0,
     ):
         self.name = name
         self.location = location
@@ -26,10 +31,14 @@ class Tournament:
         self.rounds = []
         self.players = []
         self.director_notes = director_notes
+        self.id = id
 
-        self.tournament_db = TinyDB("chess/models/tournament_database.json")
+        # self.tournament_db = TinyDB("chess/models/tournament_database.json")
 
-    def serialize_tournament(self):
+    def serialize(self) -> dict:
+        """return a dictionnary"""
+        rounds = [round.serialize() for round in self.rounds]
+
         serialized_tournament = {
             "name": self.name,
             "location": self.location,
@@ -37,18 +46,25 @@ class Tournament:
             "end_date": self.end_date,
             "num_rounds": self.num_rounds,
             "current_round_num": self.current_round_num,
-            "rounds": self.rounds,
+            "rounds": rounds,
             "players": self.players,
             "director_notes": self.director_notes,
         }
         return serialized_tournament
 
-    def update_tournament_database(self, serialized_tournament, id):
+    def add_tournament_database(self):
         """Add a tournament to the list"""
-        self.tournament_db.update(serialized_tournament, doc_ids=id)
+        serialized_tournament: dict = self.serialize()
+        id = self.table.save_db(serialized_tournament)
+        return id
+
+    def update_tournament_database(self, id):
+        """update a tournament to the list"""
+        serialized_tournament: dict = self.serialize()
+        self.table.update_db(serialized_tournament, doc_ids=id)
 
     def find_tournament(self, id):
-        return self.tournament_db.get(doc_id=id)
+        return self.table.find(doc_id=id)
 
     def sort_players_by_score(self):
         """Sort players by score (descending)"""
@@ -57,36 +73,3 @@ class Tournament:
     def sort_players_by_name(self):
         """Sort players by score (descending)"""
         self.players = sorted(self.players, key=lambda x: x["Last Name"])
-
-    @staticmethod
-    def load_tournament_db():
-        """Load tournament database
-
-        @return: list of tournaments
-        """
-        db = TinyDB("chess/models/tournament_database.json")
-        db.all()
-        tournaments_list = []
-        for item in db:
-            tournaments_list.append(item)
-
-        return tournaments_list
-
-
-class Round:
-    """Round description"""
-
-    def __init__(self, name, start_date, match_list, end_date="",match_played="" ):
-        """Round initialization"""
-        self.name = name
-        self.start_date = start_date
-        self.end_date = end_date
-        self.match_list = match_list
-        self.match_played = match_played
-
-
-class Match:
-    def __init__(self, player1: Player, player2: Player, match_result=None):
-        self.player1 = player1
-        self.player2 = player2
-        self.match_result = match_result

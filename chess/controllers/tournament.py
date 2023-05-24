@@ -1,8 +1,13 @@
 from chess.views.view_tournament import ViewsTournament
 from chess.views.view_player import ViewsPlayer
-from chess.models.tournament import Tournament, Round, Match
+from chess.models.tournament import Tournament
 from chess.models.player import Player
-from chess.models import player
+from chess.models.round import Round, Match
+from chess.database.database import (
+    TinyTableManager,
+    player_database,
+    tournament_database,
+)
 from chess.models import tournament
 import random
 from datetime import date, datetime
@@ -18,8 +23,6 @@ class TournamentController:
     def start(self):
         """Display tournament menu and user choice"""
 
-        tournament_table = Tournament.load_tournament_db()
-        player_table = Player.load_player_db()
         choice = self.views.display_tournament_menu()
 
         if choice == "0":
@@ -29,22 +32,21 @@ class TournamentController:
         if choice == "1":
             # create a tournament
             print("Create a tournament")
-            self.create_tournament(player_table)
+            # player_table = TinyTableManager.load_player_db()
+            self.create_tournament(player_database.all())
 
         if choice == "2":
             # resume tournament
             print("Resume tournament")
             tournament_list = []
-            for tournament in tournament_table:
+            for tournament in tournament_database.all():
                 print(tournament["name"])
                 tournament_list.append([tournament["name"]])
             self.views.display_tournament_list(tournament_list)
             id = self.views.get_current_tournament()
-            tournament_data: dict = tournament_table[id]
+            tournament_data: dict = tournament_database.all()[id]
             tournament: Tournament = Tournament(**tournament_data)
-            tournament.players = tournament_data[
-                "players"
-            ]  # il y a un soucis sur le unpacking des tables
+            tournament.players = tournament_data["players"]
             tournament.rounds = tournament_data["rounds"]
             self.start_tournament_manager(tournament, id)
 
@@ -68,8 +70,7 @@ class TournamentController:
             player_tournament_data.append(player_table[i])
         random.shuffle(player_tournament_data)
         tournament.players = player_tournament_data
-        serialized_tournament = tournament.serialize_tournament()
-        tournament.update_tournament_database(serialized_tournament)
+        tournament.add_tournament_database()
 
     def start_tournament_manager(self, tournament: Tournament, id):
         """Tournament manager"""
@@ -103,8 +104,8 @@ class TournamentController:
         round: Round = Round(
             name=name, start_date=start_date, match_list=match[0], match_played=match[1]
         )
-        tournament.rounds.append(round.__dict__)
-        serialized_tournament = tournament.serialize_tournament()
+        tournament.rounds.append(round)
+        serialized_tournament = tournament.serialize()
         tournament.update_tournament_database(serialized_tournament, [id + 1])
 
     def set_match(self, tournament: Tournament):
@@ -120,7 +121,7 @@ class TournamentController:
         # for round in tournament.rounds:
         #    match_played.append(round["match_list"])
         for i in range(0, l, 2):
-            player_pairs = [(tournament.players[i], tournament.players[l - i - 1])]
+            player_pairs = [tournament.players[i], tournament.players[l - i - 1]]
             n = i
             while player_pairs in match_played:
                 print("match already played")
@@ -140,7 +141,8 @@ class TournamentController:
                     break
                 tournament = tournament_temp
 
-            match_list.append(player_pairs)
+            match: Match = Match(player1=player_pairs[0], player2=player_pairs[1])
+            match_list.append(match)
             match_played.append(player_pairs)
             print(len(match_played))
 

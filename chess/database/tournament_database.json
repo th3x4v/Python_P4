@@ -1,0 +1,32 @@
+{
+    "Tournaments": {
+        "1": {
+            "name": "tets",
+            "location": "",
+            "start_date": "",
+            "end_date": "",
+            "num_rounds": "3",
+            "current_round_num": 0,
+            "rounds": [],
+            "players": [
+                {
+                    "Last Name": "Sato",
+                    "First Name": "Yuki",
+                    "Date of Birth": "28/03/1993",
+                    "Player ID": "AB12345",
+                    "Score": 0,
+                    "id": 1
+                },
+                {
+                    "Last Name": "lonjon",
+                    "First Name": "xavier",
+                    "Date of Birth": "gter",
+                    "Player ID": "gtgt",
+                    "Score": 0,
+                    "id": 2
+                }
+            ],
+            "director_notes": ""
+        }
+    }
+}
