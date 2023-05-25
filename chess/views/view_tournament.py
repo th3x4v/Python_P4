@@ -1,5 +1,6 @@
 from tabulate import tabulate
 from chess.models.tournament import Tournament
+from chess.models.round import Round, Match
 
 
 class ViewsTournament:
@@ -84,3 +85,6 @@ class ViewsTournament:
             "Current round",
         ]
         print(tabulate(tournament_table, header, tablefmt="grid"))
+
+    def match_result(self, match: Match):
+        pass

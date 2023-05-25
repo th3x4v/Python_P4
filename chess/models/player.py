@@ -17,7 +17,7 @@ class Player:
 
         # self.player_db = TinyDB("chess/models/player_database.json")
 
-    def serialize_player(self):
+    def serialize(self):
         serialized_player = {
             "Last Name": self.last_name,
             "First Name": self.first_name,
@@ -28,9 +28,17 @@ class Player:
         }
         return serialized_player
 
+    def unserialize(self, serialized_player):
+        self.last_name = serialized_player["Last Name"]
+        self.first_name = serialized_player["First Name"]
+        self.birthdate = serialized_player["Date of Birth"]
+        self.player_id = serialized_player["Player ID"]
+        self.score = serialized_player["Score"]
+        self.id = serialized_player["id"]
+
     def add_player_database(self):
         """Add a player to the list"""
-        serialized_player: dict = self.serialize_player()
+        serialized_player: dict = self.serialize()
         id = self.table.save_db(serialized_player)
         return id
 
@@ -39,5 +47,5 @@ class Player:
 
     def modify_player(self, id):
         """Modify a player in the list"""
-        serialized_player: dict = self.serialize_player()
+        serialized_player: dict = self.serialize()
         self.table.update_db(serialized_player, doc_ids=id)

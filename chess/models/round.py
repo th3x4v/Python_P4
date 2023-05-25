@@ -20,7 +20,23 @@ class Round:
             "match_list": match_list,
             "match_played": self.match_played,
         }
+        """print("serialize_round")
+        print(serialize_round)"""
         return serialize_round
+
+    @classmethod
+    def unserialize(cls, data: dict):
+        """create a Round object from a dict"""
+        match_list = [
+            Match.unserialize(match_data) for match_data in data["match_list"]
+        ]
+        return cls(
+            name=data["name"],
+            start_date=data["start_date"],
+            end_date=data["end_date"],
+            match_list=match_list,
+            match_played=data["match_played"],
+        )
 
 
 class Match:
@@ -37,3 +53,12 @@ class Match:
             "match_result": self.match_result,
         }
         return serialize_match
+
+    @classmethod
+    def unserialize(cls, data: dict):
+        """create a Match object from a dict"""
+        return cls(
+            player1=data["player1"],
+            player2=data["player2"],
+            match_result=data["match_result"],
+        )

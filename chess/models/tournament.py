@@ -52,6 +52,30 @@ class Tournament:
         }
         return serialized_tournament
 
+    @classmethod
+    def unserialize(cls, serialized_tournament):
+        """Create a new Tournament object from a serialized dictionary"""
+        print("data[serialized_tournament]")
+        print(serialized_tournament["players"])
+        tournament = cls(
+            name=serialized_tournament["name"],
+            location=serialized_tournament["location"],
+            start_date=serialized_tournament["start_date"],
+            end_date=serialized_tournament["end_date"],
+            num_rounds=serialized_tournament["num_rounds"],
+            current_round_num=serialized_tournament["current_round_num"],
+            players=serialized_tournament["players"],
+            director_notes=serialized_tournament["director_notes"],
+            id=serialized_tournament["id"],
+        )
+        tournament.rounds = [
+            Round.unserialize(round_data)
+            for round_data in serialized_tournament["rounds"]
+        ]
+        print("tournament.players")
+        print(tournament.players)
+        return tournament
+
     def add_tournament_database(self):
         """Add a tournament to the list"""
         serialized_tournament: dict = self.serialize()
@@ -61,7 +85,7 @@ class Tournament:
     def update_tournament_database(self, id):
         """update a tournament to the list"""
         serialized_tournament: dict = self.serialize()
-        self.table.update_db(serialized_tournament, doc_ids=id)
+        self.table.update_db(serialized_tournament, id)
 
     def find_tournament(self, id):
         return self.table.find(doc_id=id)

@@ -1,14 +1,46 @@
 {
     "Tournaments": {
         "1": {
-            "name": "tets",
-            "location": "",
-            "start_date": "",
-            "end_date": "",
-            "num_rounds": "3",
-            "current_round_num": 0,
+            "name": "Grand tournoi",
+            "location": "Paris",
+            "start_date": "date",
+            "end_date": "date",
+            "num_rounds": "5",
+            "current_round_num": 1,
             "rounds": [],
             "players": [
+                {
+                    "Last Name": "Garcia",
+                    "First Name": "Miguel",
+                    "Date of Birth": "15/12/1990",
+                    "Player ID": "CD67890",
+                    "Score": 0,
+                    "id": 3
+                },
+                {
+                    "Last Name": "Wong",
+                    "First Name": "Andrew",
+                    "Date of Birth": "07/04/1988",
+                    "Player ID": "ZR67890",
+                    "Score": 0,
+                    "id": 4
+                },
+                {
+                    "Last Name": "Lee",
+                    "First Name": "Hannah",
+                    "Date of Birth": "11/06/1997",
+                    "Player ID": "AC12346",
+                    "Score": 0,
+                    "id": 2
+                },
+                {
+                    "Last Name": "Kim",
+                    "First Name": "Jae",
+                    "Date of Birth": "29/09/1995",
+                    "Player ID": "TY56432",
+                    "Score": 0,
+                    "id": 5
+                },
                 {
                     "Last Name": "Sato",
                     "First Name": "Yuki",
@@ -18,15 +50,107 @@
                     "id": 1
                 },
                 {
-                    "Last Name": "lonjon",
-                    "First Name": "xavier",
-                    "Date of Birth": "gter",
-                    "Player ID": "gtgt",
+                    "Last Name": "Singh",
+                    "First Name": "Raj",
+                    "Date of Birth": "02/11/1991",
+                    "Player ID": "UJ78531",
                     "Score": 0,
-                    "id": 2
+                    "id": 7
+                },
+                {
+                    "Last Name": "Takahashi",
+                    "First Name": "Yui",
+                    "Date of Birth": "12/01/1996",
+                    "Player ID": "MP09599",
+                    "Score": 0,
+                    "id": 8
+                },
+                {
+                    "Last Name": "Chene",
+                    "First Name": "Lin",
+                    "Date of Birth": "17/08/1994",
+                    "Player ID": "BF85325",
+                    "Score": 0,
+                    "id": 6
                 }
             ],
-            "director_notes": ""
+            "director_notes": "top"
+        },
+        "2": {
+            "name": "Petit tournoi",
+            "location": "Marseille",
+            "start_date": "date",
+            "end_date": "date",
+            "num_rounds": "5",
+            "current_round_num": 0,
+            "rounds": [],
+            "players": [
+                {
+                    "Last Name": "Garcia",
+                    "First Name": "Miguel",
+                    "Date of Birth": "15/12/1990",
+                    "Player ID": "CD67890",
+                    "Score": 0,
+                    "id": 3
+                },
+                {
+                    "Last Name": "Wong",
+                    "First Name": "Andrew",
+                    "Date of Birth": "07/04/1988",
+                    "Player ID": "ZR67890",
+                    "Score": 0,
+                    "id": 4
+                },
+                {
+                    "Last Name": "Lee",
+                    "First Name": "Hannah",
+                    "Date of Birth": "11/06/1997",
+                    "Player ID": "AC12346",
+                    "Score": 0,
+                    "id": 2
+                },
+                {
+                    "Last Name": "Kim",
+                    "First Name": "Jae",
+                    "Date of Birth": "29/09/1995",
+                    "Player ID": "TY56432",
+                    "Score": 0,
+                    "id": 5
+                },
+                {
+                    "Last Name": "Sato",
+                    "First Name": "Yuki",
+                    "Date of Birth": "28/03/1993",
+                    "Player ID": "AB12345",
+                    "Score": 0,
+                    "id": 1
+                },
+                {
+                    "Last Name": "Singh",
+                    "First Name": "Raj",
+                    "Date of Birth": "02/11/1991",
+                    "Player ID": "UJ78531",
+                    "Score": 0,
+                    "id": 7
+                },
+                {
+                    "Last Name": "Takahashi",
+                    "First Name": "Yui",
+                    "Date of Birth": "12/01/1996",
+                    "Player ID": "MP09599",
+                    "Score": 0,
+                    "id": 8
+                },
+                {
+                    "Last Name": "Chene",
+                    "First Name": "Lin",
+                    "Date of Birth": "17/08/1994",
+                    "Player ID": "BF85325",
+                    "Score": 0,
+                    "id": 6
+                }
+            ],
+            "director_notes": "top"
         }
     }
 }

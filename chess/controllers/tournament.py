@@ -1,7 +1,6 @@
 from chess.views.view_tournament import ViewsTournament
 from chess.views.view_player import ViewsPlayer
 from chess.models.tournament import Tournament
-from chess.models.player import Player
 from chess.models.round import Round, Match
 from chess.database.database import (
     TinyTableManager,
@@ -44,10 +43,22 @@ class TournamentController:
                 tournament_list.append([tournament["name"]])
             self.views.display_tournament_list(tournament_list)
             id = self.views.get_current_tournament()
-            tournament_data: dict = tournament_database.all()[id]
+            print("tournament_database.all()[id]")
+            data = tournament_database.all()[id]
+            print("data[players]")
+            print(data["players"])
+            print(tournament_database.all()[id])
+            tournament: Tournament = Tournament.unserialize(
+                tournament_database.all()[id]
+            )
+            print("tournament.id")
+            print(tournament.players)
+            print(tournament.name)
+            """            tournament_data: dict = tournament_database.all()[id]
             tournament: Tournament = Tournament(**tournament_data)
             tournament.players = tournament_data["players"]
-            tournament.rounds = tournament_data["rounds"]
+            tournament.rounds = tournament_data["rounds"]"""
+
             self.start_tournament_manager(tournament, id)
 
         if choice == "3":
@@ -104,46 +115,64 @@ class TournamentController:
         round: Round = Round(
             name=name, start_date=start_date, match_list=match[0], match_played=match[1]
         )
+        print("round.serialize()")
+        print(round.serialize())
+        print("round.__dict__")
+        print(round.__dict__)
+        print("test")
         tournament.rounds.append(round)
-        serialized_tournament = tournament.serialize()
-        tournament.update_tournament_database(serialized_tournament, [id + 1])
+        tournament.update_tournament_database([id + 1])
 
     def set_match(self, tournament: Tournament):
         """Match creation"""
+        print("enter the set match")
         l = len(tournament.players)
+        print("tournament.players")
+        print(tournament.players)
         if tournament.current_round_num == 1:
             match_played = []
         else:
-            match_played = tournament.rounds[tournament.current_round_num - 2][
-                "match_played"
-            ]
+            match_played = tournament.rounds[
+                tournament.current_round_num - 2
+            ].match_played
+
         match_list = []
-        # for round in tournament.rounds:
-        #    match_played.append(round["match_list"])
         for i in range(0, l, 2):
-            player_pairs = [tournament.players[i], tournament.players[l - i - 1]]
+            player_pairs = [
+                tournament.players[i]["id"],
+                tournament.players[l - i - 1]["id"],
+            ]
             n = i
             while player_pairs in match_played:
                 print("match already played")
                 tournament_temp = tournament
                 player_pairs = [
-                    (tournament_temp.players[i], tournament_temp.players[l - n - 2])
+                    tournament_temp.players[i]["id"],
+                    tournament_temp.players[l - n - 2]["id"],
                 ]
                 (
-                    tournament_temp.players[l - n - 2],
-                    tournament_temp.players[l - i - 1],
+                    tournament_temp.players[l - n - 2]["id"],
+                    tournament_temp.players[l - i - 1]["id"],
                 ) = (
-                    tournament_temp.players[l - i - 1],
-                    tournament_temp.players[l - n - 2],
+                    tournament_temp.players[l - i - 1]["id"],
+                    tournament_temp.players[l - n - 2]["id"],
                 )
                 n += 1
                 if n == l - i:
                     break
                 tournament = tournament_temp
-
             match: Match = Match(player1=player_pairs[0], player2=player_pairs[1])
             match_list.append(match)
             match_played.append(player_pairs)
             print(len(match_played))
+            print("match_played")
+            print(match_played)
 
         return match_list, match_played
+
+    def end_round(self, round: Round):
+        for match in round.match_list:
+            result = self.views.match_result(match)
+            match.match_result = result
+
+        round.end_date = ""

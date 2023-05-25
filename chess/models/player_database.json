@@ -1,5 +1,5 @@
 {
-    "_default": {
+    "Players": {
         "1": {
             "Last Name": "Sato",
             "First Name": "Yuki",
@@ -11,19 +11,22 @@
             "Last Name": "Lee",
             "First Name": "Hannah",
             "Date of Birth": "11/06/1997",
-            "Player ID": "AC12346"
+            "Player ID": "AC12346",
+            "Score": 0
         },
         "3": {
             "Last Name": "Garcia",
             "First Name": "Miguel",
             "Date of Birth": "15/12/1990",
-            "Player ID": "CD67890"
+            "Player ID": "CD67890",
+            "Score": 0
         },
         "4": {
             "Last Name": "Wong",
             "First Name": "Andrew",
             "Date of Birth": "07/04/1988",
-            "Player ID": "ZR67890"
+            "Player ID": "ZR67890",
+            "Score": 0
         },
         "5": {
             "Last Name": "Kim",
@@ -57,7 +60,8 @@
             "Last Name": "Nguyen",
             "First Name": "An",
             "Date of Birth": "10/07/1993",
-            "Player ID": "WS68139"
+            "Player ID": "WS68139",
+            "Score": 0
         },
         "10": {
             "Last Name": "Gabrielle",
@@ -71,20 +75,6 @@
             "First Name": "Xavier",
             "Date of Birth": "04/03/1978",
             "Player ID": "XLOOOO1",
-            "Score": 0
-        },
-        "12": {
-            "Last Name": "Han",
-            "First Name": "Jessica",
-            "Date of Birth": "01/06/1988",
-            "Player ID": "HG23564",
-            "Score": 0
-        },
-        "13": {
-            "Last Name": "Lonjon",
-            "First Name": "Xavier",
-            "Date of Birth": "04/03/1978",
-            "Player ID": "XL00001",
             "Score": 0
         }
     }
