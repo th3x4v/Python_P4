@@ -1,6 +1,7 @@
 from tabulate import tabulate
 from chess.models.tournament import Tournament
 from chess.models.round import Round, Match
+from chess.database.database import player_database
 
 
 class ViewsTournament:
@@ -86,5 +87,20 @@ class ViewsTournament:
         ]
         print(tabulate(tournament_table, header, tablefmt="grid"))
 
-    def match_result(self, match: Match):
-        pass
+    def get_match_result(self, match: Match):
+        """Get the match result"""
+        print("Please, who is the winner of this match")
+        print(player_database[match.player1])
+        print("vs")
+        print(player_database[match.player2])
+
+
+if __name__ == "__main__":
+    from tabulate import tabulate
+    from chess.models.tournament import Tournament
+    from chess.models.round import Round, Match
+    from chess.database.database import player_database
+
+    match: Match = Match(1, 2)
+    views = ViewsTournament()
+    views.get_match_result(match)

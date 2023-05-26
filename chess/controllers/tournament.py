@@ -46,12 +46,11 @@ class TournamentController:
             print("tournament_database.all()[id]")
             data = tournament_database.all()[id]
             print("data[players]")
-            print(data["players"])
-            print(tournament_database.all()[id])
-            tournament: Tournament = Tournament.unserialize(
-                tournament_database.all()[id]
-            )
-            print("tournament.id")
+            tournaments = tournament_database.all()
+            print("tournaments debug")
+            print(tournaments)
+            tournament: Tournament = Tournament.unserialize(tournaments[id])
+            print("tournament.player debug")
             print(tournament.players)
             print(tournament.name)
             """            tournament_data: dict = tournament_database.all()[id]
@@ -78,9 +77,12 @@ class TournamentController:
         player_list: list = self.views.get_player_tournament_info()
         player_tournament_data: list = []
         for i in player_list:
-            player_tournament_data.append(player_table[i])
+            print("player_table[i]id debug")
+            print(player_table[i]["id"])
+            player_tournament_data.append(player_table[i]["id"])
         random.shuffle(player_tournament_data)
         tournament.players = player_tournament_data
+        tournament.rounds = []
         tournament.add_tournament_database()
 
     def start_tournament_manager(self, tournament: Tournament, id):
@@ -139,23 +141,23 @@ class TournamentController:
         match_list = []
         for i in range(0, l, 2):
             player_pairs = [
-                tournament.players[i]["id"],
-                tournament.players[l - i - 1]["id"],
+                tournament.players[i],
+                tournament.players[l - i - 1],
             ]
             n = i
             while player_pairs in match_played:
                 print("match already played")
                 tournament_temp = tournament
                 player_pairs = [
-                    tournament_temp.players[i]["id"],
-                    tournament_temp.players[l - n - 2]["id"],
+                    tournament_temp.players[i],
+                    tournament_temp.players[l - n - 2],
                 ]
                 (
-                    tournament_temp.players[l - n - 2]["id"],
-                    tournament_temp.players[l - i - 1]["id"],
+                    tournament_temp.players[l - n - 2],
+                    tournament_temp.players[l - i - 1],
                 ) = (
-                    tournament_temp.players[l - i - 1]["id"],
-                    tournament_temp.players[l - n - 2]["id"],
+                    tournament_temp.players[l - i - 1],
+                    tournament_temp.players[l - n - 2],
                 )
                 n += 1
                 if n == l - i:

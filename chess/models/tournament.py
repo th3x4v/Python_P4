@@ -28,8 +28,8 @@ class Tournament:
         self.end_date = end_date
         self.num_rounds = num_rounds
         self.current_round_num = current_round_num
-        self.rounds = []
-        self.players = []
+        self.rounds = rounds
+        self.players = players
         self.director_notes = director_notes
         self.id = id
 
@@ -97,3 +97,8 @@ class Tournament:
     def sort_players_by_name(self):
         """Sort players by score (descending)"""
         self.players = sorted(self.players, key=lambda x: x["Last Name"])
+
+
+if __name__ == "__main__":
+    tournament: Tournament = Tournament()
+    pass

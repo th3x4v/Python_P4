@@ -1,4 +1,3 @@
-from tinydb import TinyDB, Query
 from chess.database.database import TinyTableManager, player_database
 
 
@@ -15,8 +14,6 @@ class Player:
         self.score = score
         self.id = id
 
-        # self.player_db = TinyDB("chess/models/player_database.json")
-
     def serialize(self):
         serialized_player = {
             "Last Name": self.last_name,
@@ -28,13 +25,16 @@ class Player:
         }
         return serialized_player
 
-    def unserialize(self, serialized_player):
-        self.last_name = serialized_player["Last Name"]
-        self.first_name = serialized_player["First Name"]
-        self.birthdate = serialized_player["Date of Birth"]
-        self.player_id = serialized_player["Player ID"]
-        self.score = serialized_player["Score"]
-        self.id = serialized_player["id"]
+    @classmethod
+    def unserialize(cls, serialized_player):
+        return cls(
+            last_name=serialized_player["Last Name"],
+            first_name=serialized_player["First Name"],
+            birthdate=serialized_player["Date of Birth"],
+            player_id=serialized_player["Player ID"],
+            score=serialized_player["Score"],
+            id=serialized_player["id"],
+        )
 
     def add_player_database(self):
         """Add a player to the list"""
