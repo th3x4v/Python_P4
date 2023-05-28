@@ -21,9 +21,7 @@ class ViewsPlayer:
         return choice_player_menu
 
     def display_player_list(self, player_data):
-        table = tabulate(
-            player_data, headers="keys", tablefmt="grid", showindex="always"
-        )
+        table = tabulate(player_data, headers="keys", tablefmt="grid")
         print(table)
 
     def get_info_player(self, player_to_modify: dict = None) -> "dict":

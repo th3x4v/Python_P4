@@ -1,4 +1,5 @@
 from chess.views.view_tournament import ViewsTournament
+from chess.models.player import Player
 from chess.views.view_player import ViewsPlayer
 from chess.models.tournament import Tournament
 from chess.models.round import Round, Match
@@ -43,21 +44,8 @@ class TournamentController:
                 tournament_list.append([tournament["name"]])
             self.views.display_tournament_list(tournament_list)
             id = self.views.get_current_tournament()
-            print("tournament_database.all()[id]")
-            data = tournament_database.all()[id]
-            print("data[players]")
             tournaments = tournament_database.all()
-            print("tournaments debug")
-            print(tournaments)
             tournament: Tournament = Tournament.unserialize(tournaments[id])
-            print("tournament.player debug")
-            print(tournament.players)
-            print(tournament.name)
-            """            tournament_data: dict = tournament_database.all()[id]
-            tournament: Tournament = Tournament(**tournament_data)
-            tournament.players = tournament_data["players"]
-            tournament.rounds = tournament_data["rounds"]"""
-
             self.start_tournament_manager(tournament, id)
 
         if choice == "3":
@@ -74,13 +62,12 @@ class TournamentController:
     def add_player_tournament(self, player_table, tournament: Tournament):
         """Add player to a tournament"""
         self.playerviews.display_player_list(player_table)
-        player_list: list = self.views.get_player_tournament_info()
-        player_tournament_data: list = []
-        for i in player_list:
-            print("player_table[i]id debug")
-            print(player_table[i]["id"])
-            player_tournament_data.append(player_table[i]["id"])
-        random.shuffle(player_tournament_data)
+        player_tournament_list: list = self.views.get_player_tournament_info()
+        random.shuffle(player_tournament_list)
+        player_tournament_data = []
+        for player in player_tournament_list:
+            player_data: dict = {"player": player, "score": 0}
+            player_tournament_data.append(player_data)
         tournament.players = player_tournament_data
         tournament.rounds = []
         tournament.add_tournament_database()
@@ -99,7 +86,23 @@ class TournamentController:
         if choice == "1":
             # Next round
             print("next round")
-            self.next_round(tournament, id)
+            if tournament.rounds == []:
+                self.next_round(tournament, id)
+            else:
+                current_round = tournament.rounds[-1]
+                if current_round.status == 1:
+                    self.next_round(tournament, id)
+                else:
+                    self.end_round(current_round, tournament.players)
+                    print("player_list")
+                    print(tournament.players)
+                    tournament.players = sorted(
+                        tournament.players, key=lambda x: x.get("score"), reverse=True
+                    )
+                    print("player_list")
+                    print(tournament.players)
+                    tournament.rounds[-1] = current_round
+                    tournament.update_tournament_database([id + 1])
 
         if choice == "2":
             # resume tournament
@@ -117,11 +120,6 @@ class TournamentController:
         round: Round = Round(
             name=name, start_date=start_date, match_list=match[0], match_played=match[1]
         )
-        print("round.serialize()")
-        print(round.serialize())
-        print("round.__dict__")
-        print(round.__dict__)
-        print("test")
         tournament.rounds.append(round)
         tournament.update_tournament_database([id + 1])
 
@@ -139,42 +137,91 @@ class TournamentController:
             ].match_played
 
         match_list = []
-        for i in range(0, l, 2):
+        for i in range(0, int(l / 2), 1):
+            print("i")
+            print(i)
+            print(l)
+            print("debug0")
+            print(tournament.players)
             player_pairs = [
-                tournament.players[i],
-                tournament.players[l - i - 1],
+                tournament.players[i]["player"],
+                tournament.players[l - i - 1]["player"],
             ]
             n = i
-            while player_pairs in match_played:
-                print("match already played")
-                tournament_temp = tournament
-                player_pairs = [
-                    tournament_temp.players[i],
-                    tournament_temp.players[l - n - 2],
-                ]
-                (
-                    tournament_temp.players[l - n - 2],
-                    tournament_temp.players[l - i - 1],
-                ) = (
-                    tournament_temp.players[l - i - 1],
-                    tournament_temp.players[l - n - 2],
-                )
-                n += 1
-                if n == l - i:
-                    break
-                tournament = tournament_temp
+            if i != l / 2 - 1:
+                while player_pairs or list(reversed(player_pairs)) in match_played:
+                    print("match already played")
+                    tournament_temp = tournament
+                    print("debug1")
+                    print("pair")
+                    print(player_pairs)
+                    print("reversepair")
+                    print(list(reversed(player_pairs)))
+                    print(tournament_temp.players)
+                    player_pairs = [
+                        tournament_temp.players[i]["player"],
+                        tournament_temp.players[l - n - 2]["player"],
+                    ]
+                    print("pair")
+                    print(player_pairs)
+                    (
+                        tournament_temp.players[l - n - 2]["player"],
+                        tournament_temp.players[l - i - 1]["player"],
+                    ) = (
+                        tournament_temp.players[l - i - 1]["player"],
+                        tournament_temp.players[l - n - 2]["player"],
+                    )
+                    n += 1
+                    if n == int(l / 2) - i:
+                        print("break")
+                        print(n)
+                        break
+                    tournament = tournament_temp
+                    print("debug2")
+                    print(n)
+                    print(tournament_temp.players)
             match: Match = Match(player1=player_pairs[0], player2=player_pairs[1])
             match_list.append(match)
             match_played.append(player_pairs)
-            print(len(match_played))
             print("match_played")
             print(match_played)
 
         return match_list, match_played
 
-    def end_round(self, round: Round):
+    def end_round(self, round: Round, player_list):
+        """Finalize a round with updating match result and end date"""
         for match in round.match_list:
-            result = self.views.match_result(match)
+            result = self.views.get_match_result(match)
             match.match_result = result
-
-        round.end_date = ""
+            player1_data = player_database.all()[match.player1 - 1]
+            player1: Player = Player.unserialize(player1_data)
+            player2_data = player_database.all()[match.player2 - 1]
+            player2: Player = Player.unserialize(player2_data)
+            if result == "1":
+                # add result to global score
+                player1.score = player1.score + 1
+                player1.modify_player(int(player1.id))
+                # add result to tournament
+                for player in player_list:
+                    if player["player"] == player1.id:
+                        player["score"] = player["score"] + 1
+            elif result == "2":
+                player2.score = player2.score + 1
+                player2.modify_player(int(player2.id))
+                # add result to tournament
+                for player in player_list:
+                    if player["player"] == player2.id:
+                        player["score"] = player["score"] + 1
+            else:
+                player1.score = player1.score + 0.5
+                player2.score = player2.score + 0.5
+                player1.modify_player(int(player1.id))
+                player2.modify_player(int(player2.id))
+                # add result to tournament
+                for player in player_list:
+                    if player["player"] == player1.id:
+                        player["score"] = player["score"] + 0.5
+                    if player["player"] == player2.id:
+                        player["score"] = player["score"] + 0.5
+        round.end_date = "test"
+        round.status = 1

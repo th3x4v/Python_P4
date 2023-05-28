@@ -35,7 +35,7 @@ class ViewsTournament:
 
     def get_player_tournament_info(self) -> list:
         player_list: list = []
-        print("Put the player numbers who will participate to the tournament ")
+        print("Put the id of the player who will participate to the tournament ")
         add_player = input("press enter when the list is complete ")
         while add_player != "":
             player_list.append(int(add_player))
@@ -90,17 +90,14 @@ class ViewsTournament:
     def get_match_result(self, match: Match):
         """Get the match result"""
         print("Please, who is the winner of this match")
-        print(player_database[match.player1])
+        print(player_database.all()[match.player1-1])
         print("vs")
-        print(player_database[match.player2])
+        print(player_database.all()[match.player2-1])
+        match_result = input("Enter the player id ")
+        return match_result
 
 
 if __name__ == "__main__":
-    from tabulate import tabulate
-    from chess.models.tournament import Tournament
-    from chess.models.round import Round, Match
-    from chess.database.database import player_database
-
     match: Match = Match(1, 2)
     views = ViewsTournament()
     views.get_match_result(match)

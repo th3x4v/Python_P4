@@ -48,4 +48,4 @@ class Player:
     def modify_player(self, id):
         """Modify a player in the list"""
         serialized_player: dict = self.serialize()
-        self.table.update_db(serialized_player, doc_ids=id)
+        self.table.update_db(serialized_player, [id])

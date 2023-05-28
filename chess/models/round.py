@@ -1,13 +1,16 @@
 class Round:
     """Round description"""
 
-    def __init__(self, name, start_date, match_list, end_date="", match_played=""):
+    def __init__(
+        self, name, start_date, match_list, end_date="", match_played="", status="0"
+    ):
         """Round initialization"""
         self.name = name
         self.start_date = start_date
         self.end_date = end_date
         self.match_list = match_list
         self.match_played = match_played
+        self.status = status
 
     def serialize(self) -> dict:
         """return a dict with the attribute of this object Round"""
@@ -19,6 +22,7 @@ class Round:
             "end_date": self.end_date,
             "match_list": match_list,
             "match_played": self.match_played,
+            "status": self.status,
         }
         """print("serialize_round")
         print(serialize_round)"""
@@ -36,6 +40,7 @@ class Round:
             end_date=data["end_date"],
             match_list=match_list,
             match_played=data["match_played"],
+            status=data["status"],
         )
 
 
