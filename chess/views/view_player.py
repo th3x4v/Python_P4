@@ -1,5 +1,6 @@
 from tabulate import tabulate
 from chess.models.player import Player
+from chess.views.view_menu import Views
 import json
 
 
@@ -9,7 +10,7 @@ class ViewsPlayer:
     """
 
     def __init__(self):
-        pass
+        self.view_menu = Views()
 
     def display_player_menu(self):
         print("\n*** player menu ***\n".upper())
@@ -28,10 +29,16 @@ class ViewsPlayer:
         """Interface to get a player information"""
         if player_to_modify == None:
             player_data = {}
-            player_data["last_name"] = input("Last name: ")
-            player_data["first_name"] = input("First name: ")
-            player_data["birthdate"] = input("Date of birthday (DD/MM/YYYY): ")
-            player_data["player_id"] = input("INE identification: ")
+            player_data["last_name"] = self.view_menu.get_user_entries(
+                "Last name: ", "string"
+            )
+            player_data["first_name"] = self.view_menu.get_user_entries(
+                "First name: ", "string"
+            )
+            player_data["birthdate"] = self.view_menu.get_user_entries(
+                "Date of birthday (DD/MM/YYYY): ", "date"
+            )
+            player_data["player_INE"] = self.view_menu.get_user_entries("INE identification: ", "INE")
         else:
             print("The player name you want to modify is: ")
             print(player_to_modify.get("Last Name"))

@@ -2,6 +2,8 @@ from tabulate import tabulate
 from chess.models.tournament import Tournament
 from chess.models.round import Round, Match
 from chess.database.database import player_database
+from chess.views.view_menu import Views
+from chess.models.player import Player
 
 
 class ViewsTournament:
@@ -10,7 +12,7 @@ class ViewsTournament:
     """
 
     def __init__(self):
-        pass
+        self.view_menu = Views()
 
     def display_tournament_menu(self):
         print("\n*** tournament menu ***\n".upper())
@@ -23,20 +25,32 @@ class ViewsTournament:
     def get_tournament_info(self) -> dict:
         """Interface to get tournament information"""
         player_tournament = {}
-        player_tournament["name"] = input("Name of the tournament: ")
-        player_tournament["location"] = input("Location: ")
-        player_tournament["start_date"] = input(
-            "Tournament starting date (DD/MM/YYYY): "
+        player_tournament["name"] = self.view_menu.get_user_entries(
+            "name of tournament", "string"
         )
-        player_tournament["end_date"] = input("Tournament ending date (DD/MM/YYYY): ")
-        player_tournament["num_rounds"] = input("Number of rounds: ")
-        player_tournament["director_notes"] = input("Director description : ")
+        player_tournament["location"] = self.view_menu.get_user_entries(
+            "Location", "string"
+        )
+        player_tournament["start_date"] = self.view_menu.get_user_entries(
+            "Tournament starting date (DD/MM/YYYY): ", "date"
+        )
+        player_tournament["end_date"] = self.view_menu.get_user_entries(
+            "Tournament ending date (DD/MM/YYYY): ", "date"
+        )
+        player_tournament["num_rounds"] = self.view_menu.get_user_entries(
+            "Number of rounds: ", "int"
+        )
+        player_tournament["director_notes"] = self.view_menu.get_user_entries(
+            "Director description : ", "string"
+        )
         return player_tournament
 
     def get_player_tournament_info(self) -> list:
         player_list: list = []
         print("Put the id of the player who will participate to the tournament ")
-        add_player = input("press enter when the list is complete ")
+        add_player = self.view_menu.get_user_entries(
+            "press enter when the list is complete ", "int"
+        )
         while add_player != "":
             player_list.append(int(add_player))
             add_player = input("press enter when the list is complete ")
@@ -45,8 +59,9 @@ class ViewsTournament:
     def get_current_tournament(self):
         """resume a tournament"""
         id = int(
-            input(
-                "what is the position in the list of the tournament you want to resume ? "
+            self.view_menu.get_user_entries(
+                "what is the position in the list of the tournament you want to resume ? ",
+                "int",
             )
         )
         return id
@@ -90,10 +105,18 @@ class ViewsTournament:
     def get_match_result(self, match: Match):
         """Get the match result"""
         print("Please, who is the winner of this match")
-        print(player_database.all()[match.player1-1])
-        print("vs")
-        print(player_database.all()[match.player2-1])
-        match_result = input("Enter the player id ")
+        player1 = Player.get_player_info(match.player1 - 1)
+        player1_data = list((player1.serialize()).values())
+        player1_data.pop(-1)
+        print(player1_data)
+        player2 = Player.get_player_info(match.player2 - 1)
+        player2_data = list((player2.serialize()).values())
+        player2_data.pop(-1)
+        neutral_info = ["", "", "VS", "", ""]
+        player_data = zip(player1_data, neutral_info, player2_data)
+        table = tabulate(player_data, headers=["1", "N", "2"], tablefmt="fancy_grid")
+        print(table)
+        match_result = self.view_menu.get_user_entries("Result", "result")
         return match_result
 
 

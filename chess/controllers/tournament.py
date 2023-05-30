@@ -84,15 +84,17 @@ class TournamentController:
             self.playerviews.display_player_list(tournament.players)
 
         if choice == "1":
-            # Next round
-            print("next round")
+            # Continue the tournament
             if tournament.rounds == []:
+                print("next round")
                 self.next_round(tournament, id)
             else:
                 current_round = tournament.rounds[-1]
                 if current_round.status == 1:
+                    print("next round")
                     self.next_round(tournament, id)
                 else:
+                    print("round ending")
                     self.end_round(current_round, tournament.players)
                     print("player_list")
                     print(tournament.players)
@@ -103,6 +105,7 @@ class TournamentController:
                     print(tournament.players)
                     tournament.rounds[-1] = current_round
                     tournament.update_tournament_database([id + 1])
+            self.start_tournament_manager(tournament, id)
 
         if choice == "2":
             # resume tournament
@@ -111,6 +114,7 @@ class TournamentController:
         if choice == "3":
             # exit
             print("exit")
+            self.start()
 
     def next_round(self, tournament: Tournament, id):
         tournament.current_round_num = tournament.current_round_num + 1
@@ -132,6 +136,8 @@ class TournamentController:
         if tournament.current_round_num == 1:
             match_played = []
         else:
+            print("tournament.roundstournament.current_round_num - 2.match_played1")
+            print(tournament.rounds[tournament.current_round_num - 2].match_played)
             match_played = tournament.rounds[
                 tournament.current_round_num - 2
             ].match_played
@@ -148,8 +154,10 @@ class TournamentController:
                 tournament.players[l - i - 1]["player"],
             ]
             n = i
-            if i != l / 2 - 1:
-                while player_pairs or list(reversed(player_pairs)) in match_played:
+            if i != l / 2 - 1:  # check if it's not the last match to be set
+                while (player_pairs in match_played) or (
+                    list(reversed(player_pairs)) in match_played
+                ):
                     print("match already played")
                     tournament_temp = tournament
                     print("debug1")
@@ -174,17 +182,26 @@ class TournamentController:
                     n += 1
                     if n == int(l / 2) - i:
                         print("break")
-                        print(n)
                         break
                     tournament = tournament_temp
                     print("debug2")
                     print(n)
                     print(tournament_temp.players)
+            # print("tournament.roundstournament.current_round_num - 2.match_played2")
+            # print(tournament.rounds[tournament.current_round_num - 2].match_played)
             match: Match = Match(player1=player_pairs[0], player2=player_pairs[1])
             match_list.append(match)
-            match_played.append(player_pairs)
+            if not (player_pairs in match_played) or not (
+                list(reversed(player_pairs)) in match_played
+            ):
+                match_played.append(player_pairs)
+            # print("tournament.roundstournament.current_round_num - 2.match_played3")
+            # print(tournament.rounds[tournament.current_round_num - 2].match_played)
             print("match_played")
             print(match_played)
+            # display match
+            for match in match_list:
+                pass
 
         return match_list, match_played
 
@@ -193,10 +210,8 @@ class TournamentController:
         for match in round.match_list:
             result = self.views.get_match_result(match)
             match.match_result = result
-            player1_data = player_database.all()[match.player1 - 1]
-            player1: Player = Player.unserialize(player1_data)
-            player2_data = player_database.all()[match.player2 - 1]
-            player2: Player = Player.unserialize(player2_data)
+            player1 = Player.get_player_info(match.player1 - 1)
+            player2 = Player.get_player_info(match.player2 - 1)
             if result == "1":
                 # add result to global score
                 player1.score = player1.score + 1

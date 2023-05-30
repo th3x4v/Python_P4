@@ -1,6 +1,6 @@
 from chess.views.view_player import ViewsPlayer
 from chess.models.player import Player
-from chess.database.database import TinyTableManager, player_database
+from chess.database.database import player_database
 
 
 class PlayerController:
@@ -12,8 +12,6 @@ class PlayerController:
     def start(self):
         """Display player menu and user choice"""
 
-        # player_table = TinyTableManager.load_player_db()
-
         choice = self.views.display_player_menu()
 
         if choice == "0":
@@ -21,17 +19,20 @@ class PlayerController:
             print("Player list")
             sorted_player = player_database.sort_players_by_name()
             self.views.display_player_list(sorted_player)
+            self.start()
 
         if choice == "1":
             # Add players
             print("Add players")
             self.add_player()
+            self.start()
 
         if choice == "2":
             # modifiy player
             print("modifiy player")
             self.views.display_player_list(player_database)
             self.modify_player(player_database)
+            self.start()
 
         if choice == "3":
             # exit

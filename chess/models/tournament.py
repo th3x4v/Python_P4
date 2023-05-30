@@ -55,8 +55,6 @@ class Tournament:
     @classmethod
     def unserialize(cls, serialized_tournament):
         """Create a new Tournament object from a serialized dictionary"""
-        print("data[serialized_tournament]")
-        print(serialized_tournament["players"])
         tournament = cls(
             name=serialized_tournament["name"],
             location=serialized_tournament["location"],
