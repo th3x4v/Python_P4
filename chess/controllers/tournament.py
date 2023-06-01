@@ -1,14 +1,13 @@
+from tabulate import tabulate
 from chess.views.view_tournament import ViewsTournament
 from chess.models.player import Player
 from chess.views.view_player import ViewsPlayer
 from chess.models.tournament import Tournament
 from chess.models.round import Round, Match
 from chess.database.database import (
-    TinyTableManager,
     player_database,
     tournament_database,
 )
-from chess.models import tournament
 import random
 from datetime import date, datetime
 
@@ -32,7 +31,6 @@ class TournamentController:
         if choice == "1":
             # create a tournament
             print("Create a tournament")
-            # player_table = TinyTableManager.load_player_db()
             self.create_tournament(player_database.all())
 
         if choice == "2":
@@ -80,6 +78,7 @@ class TournamentController:
         if choice == "0":
             # Tournament reports
             print("Display tournament reports")
+            self.tournament_report(tournament)
             tournament.sort_players_by_name()
             self.playerviews.display_player_list(tournament.players)
 
@@ -96,13 +95,9 @@ class TournamentController:
                 else:
                     print("round ending")
                     self.end_round(current_round, tournament.players)
-                    print("player_list")
-                    print(tournament.players)
                     tournament.players = sorted(
                         tournament.players, key=lambda x: x.get("score"), reverse=True
                     )
-                    print("player_list")
-                    print(tournament.players)
                     tournament.rounds[-1] = current_round
                     tournament.update_tournament_database([id + 1])
             self.start_tournament_manager(tournament, id)
@@ -129,26 +124,17 @@ class TournamentController:
 
     def set_match(self, tournament: Tournament):
         """Match creation"""
-        print("enter the set match")
+        print("The matches of the round will be: ")
         l = len(tournament.players)
-        print("tournament.players")
-        print(tournament.players)
         if tournament.current_round_num == 1:
             match_played = []
         else:
-            print("tournament.roundstournament.current_round_num - 2.match_played1")
-            print(tournament.rounds[tournament.current_round_num - 2].match_played)
             match_played = tournament.rounds[
                 tournament.current_round_num - 2
             ].match_played
 
         match_list = []
         for i in range(0, int(l / 2), 1):
-            print("i")
-            print(i)
-            print(l)
-            print("debug0")
-            print(tournament.players)
             player_pairs = [
                 tournament.players[i]["player"],
                 tournament.players[l - i - 1]["player"],
@@ -160,18 +146,10 @@ class TournamentController:
                 ):
                     print("match already played")
                     tournament_temp = tournament
-                    print("debug1")
-                    print("pair")
-                    print(player_pairs)
-                    print("reversepair")
-                    print(list(reversed(player_pairs)))
-                    print(tournament_temp.players)
                     player_pairs = [
                         tournament_temp.players[i]["player"],
                         tournament_temp.players[l - n - 2]["player"],
                     ]
-                    print("pair")
-                    print(player_pairs)
                     (
                         tournament_temp.players[l - n - 2]["player"],
                         tournament_temp.players[l - i - 1]["player"],
@@ -184,24 +162,19 @@ class TournamentController:
                         print("break")
                         break
                     tournament = tournament_temp
-                    print("debug2")
-                    print(n)
-                    print(tournament_temp.players)
-            # print("tournament.roundstournament.current_round_num - 2.match_played2")
-            # print(tournament.rounds[tournament.current_round_num - 2].match_played)
             match: Match = Match(player1=player_pairs[0], player2=player_pairs[1])
+            # display match
+            player_data = match.match_table()
+            player_data.pop(-1)
+            player_data.pop(-1)
+            player_data.pop(2)
+            table = tabulate(player_data, tablefmt="fancy_grid")
+            print(table)
             match_list.append(match)
             if not (player_pairs in match_played) or not (
                 list(reversed(player_pairs)) in match_played
             ):
                 match_played.append(player_pairs)
-            # print("tournament.roundstournament.current_round_num - 2.match_played3")
-            # print(tournament.rounds[tournament.current_round_num - 2].match_played)
-            print("match_played")
-            print(match_played)
-            # display match
-            for match in match_list:
-                pass
 
         return match_list, match_played
 
@@ -240,3 +213,58 @@ class TournamentController:
                         player["score"] = player["score"] + 0.5
         round.end_date = "test"
         round.status = 1
+
+    def tournament_report(self, tournament: Tournament):
+        """tournament report choice"""
+
+        choice = self.views.display_tournament_report()
+
+        if choice == "0":
+            #
+            print("Tournament list")
+
+        if choice == "1":
+            # tournament list
+            print("Tournament list")
+
+            table = tabulate(
+                self.tournament_table(),
+                headers=[
+                    "Name",
+                    "Location",
+                    "Start date",
+                    "End date",
+                    "Number of rounds",
+                    "Current round",
+                    "director_notes",
+                    "id",
+                ],
+                tablefmt="fancy_grid",
+            )
+            print(table)
+            # self.views.display_tournament_list(self.tournament_table())
+
+        if choice == "2":
+            # Report of a specific tournament
+            print("Tournament information")
+            id = self.views.get_current_tournament()
+            tournament: Tournament = Tournament.get_tournament_info(id)
+
+        if choice == "3":
+            # exit
+            pass
+
+    def tournament_table(self):
+        tournament_list = []
+        for tournament in tournament_database.all():
+            tournament_data = list(tournament.values())
+            tournament_data.pop(6)
+            tournament_data.pop(6)
+            tournament_list.append(tournament_data)
+        return tournament_list
+
+
+if __name__ == "__main__":
+    self = TournamentController()
+    tournament: Tournament = Tournament.get_tournament_info(0)
+    self.tournament_report(tournament)

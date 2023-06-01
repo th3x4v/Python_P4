@@ -1,3 +1,7 @@
+from chess.models.tournament import Tournament
+from chess.models.player import Player
+
+
 class Round:
     """Round description"""
 
@@ -43,6 +47,12 @@ class Round:
             status=data["status"],
         )
 
+    @classmethod
+    def get_round_info(cls, tournament: Tournament, id):
+        round_data = tournament.rounds[id]
+        round: Round = Round.unserialize(round_data)
+        return round
+
 
 class Match:
     def __init__(self, player1, player2, match_result=None):
@@ -67,3 +77,18 @@ class Match:
             player2=data["player2"],
             match_result=data["match_result"],
         )
+
+    @classmethod
+    def get_match_info(cls, round: Round, id):
+        match_data = round.match_list[id]
+        match: Match = Match.unserialize(match_data)
+        return match
+
+    def match_table(self):
+        player1 = Player.get_player_info(self.player1 - 1)
+        player1_data = list((player1.serialize()).values())
+        player2 = Player.get_player_info(self.player2 - 1)
+        player2_data = list((player2.serialize()).values())
+        neutral_info = ["", "VS", "", "", "", ""]
+        player_data = list(zip(player1_data, neutral_info, player2_data))
+        return player_data

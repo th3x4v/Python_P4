@@ -1,6 +1,3 @@
-from chess.models.player import Player
-from chess.models.round import Round
-from tinydb import TinyDB
 from chess.database.database import TinyTableManager, tournament_database
 
 
@@ -55,6 +52,8 @@ class Tournament:
     @classmethod
     def unserialize(cls, serialized_tournament):
         """Create a new Tournament object from a serialized dictionary"""
+        from chess.models.round import Round
+
         tournament = cls(
             name=serialized_tournament["name"],
             location=serialized_tournament["location"],
@@ -72,6 +71,12 @@ class Tournament:
         ]
         print("tournament.players")
         print(tournament.players)
+        return tournament
+
+    @classmethod
+    def get_tournament_info(cls, id):
+        tournament_data = tournament_database.all()[id]
+        tournament: Tournament = Tournament.unserialize(tournament_data)
         return tournament
 
     def add_tournament_database(self):
