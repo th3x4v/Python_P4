@@ -31,28 +31,9 @@ class Tournament:
         self.director_notes = director_notes
         self.id = id
 
-    """    def serialize(self) -> dict:
-        #return a dictionnary
-        rounds = [round.serialize() for round in self.rounds]
-
-        serialized_tournament = {
-            "name": self.name,
-            "location": self.location,
-            "start_date": self.start_date,
-            "end_date": self.end_date,
-            "num_rounds": self.num_rounds,
-            "current_round_num": self.current_round_num,
-            "rounds": rounds,
-            "players": self.players,
-            "director_notes": self.director_notes,
-        }
-        return serialized_tournament"""
-
     def serialize(self) -> dict:
         """return a dictionnary"""
         rounds = [round.serialize() for round in self.rounds]
-        print("debug")
-        print(self.players)
         players = [
             {"player": player["player"].id, "score": player["score"]}
             for player in self.players
@@ -72,28 +53,6 @@ class Tournament:
         }
         return serialized_tournament
 
-    """    @classmethod
-    def unserialize(cls, serialized_tournament):
-        
-        from chess.models.round import Round
-
-        tournament = cls(
-            name=serialized_tournament["name"],
-            location=serialized_tournament["location"],
-            start_date=serialized_tournament["start_date"],
-            end_date=serialized_tournament["end_date"],
-            num_rounds=serialized_tournament["num_rounds"],
-            current_round_num=serialized_tournament["current_round_num"],
-            players=serialized_tournament["players"],
-            director_notes=serialized_tournament["director_notes"],
-            id=serialized_tournament["id"],
-        )
-        tournament.rounds = [
-            Round.unserialize(round_data)
-            for round_data in serialized_tournament["rounds"]
-        ]
-        return tournament"""
-
     @classmethod
     def unserialize(cls, serialized_tournament):
         """Create a new Tournament object from a serialized dictionary"""
@@ -109,13 +68,6 @@ class Tournament:
             director_notes=serialized_tournament["director_notes"],
             id=serialized_tournament["id"],
         )
-        print("debug1")
-        print(serialized_tournament["players"])
-        players = serialized_tournament["players"]
-        print("debug2")
-        print(players[1])
-        print("debug22")
-        print(type(players[1]["player"]))
         tournament.players = [
             {
                 "player": Player.get_player_info(player["player"]),
@@ -123,8 +75,6 @@ class Tournament:
             }
             for player in serialized_tournament["players"]
         ]
-        print("debug3")
-        print(tournament.players)
         tournament.rounds = [
             Round.unserialize(round_data)
             for round_data in serialized_tournament["rounds"]
@@ -203,4 +153,3 @@ if __name__ == "__main__":
     print(tournament_serialized["players"])
     tournament_unserialized = Tournament.unserialize(tournament_serialized)
     print(tournament_unserialized.players)
-    

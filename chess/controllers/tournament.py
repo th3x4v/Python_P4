@@ -29,21 +29,19 @@ class TournamentController:
         if choice == "0":
             # Tournament list
             print("Tournament list")
-            table = tabulate(
+            self.views_menu.display_list(
                 self.tournament_table(),
-                headers=[
+                header=[
                     "Name",
                     "Location",
                     "Start date",
                     "End date",
                     "Number of rounds",
                     "Current round",
-                    "director_notes",
                     "id",
+                    "director_notes",
                 ],
-                tablefmt="fancy_grid",
             )
-            print(table)
             self.start()
 
         if choice == "1":
@@ -189,21 +187,12 @@ class TournamentController:
         for match in round.match_list:
             result = self.views.get_match_result(match)
             match.match_result = result
-            print(player_list)
-            # player1 = Player.get_player_info(match.player1 - 1)
-            # player2 = Player.get_player_info(match.player2 - 1)
             if result == "1":
                 # add result to global score
                 match.player1.score = match.player1.score + 1
                 match.player1.modify_player(int(match.player1.id))
                 # add result to tournament
                 for player in player_list:
-                    print("debig")
-                    print(player)
-                    print("debig")
-                    print(player["player"])
-                    print("debig")
-                    print(match.player1)
                     if player["player"] == match.player1:
                         player["score"] = player["score"] + 1
             elif result == "2":

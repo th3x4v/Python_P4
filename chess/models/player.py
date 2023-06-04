@@ -38,7 +38,7 @@ class Player:
 
     @classmethod
     def get_player_info(cls, id):
-        player_data = player_database.all()[id]
+        player_data = player_database.all()[id - 1]
         player: Player = Player.unserialize(player_data)
         return player
 
@@ -46,6 +46,8 @@ class Player:
         """Add a player to the list"""
         serialized_player: dict = self.serialize()
         id = self.table.save_db(serialized_player)
+        print("debug")
+        print(id)
         return id
 
     def find_player(self, id):

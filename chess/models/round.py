@@ -86,14 +86,12 @@ class Match:
 
     @classmethod
     def get_match_info(cls, round: Round, id):
-        match_data = round.match_list[id]
+        match_data = round.match_list[id - 1]
         match: Match = Match.unserialize(match_data)
         return match
 
     def match_table(self):
-        # player1 = Player.get_player_info(self.player1 - 1)
         player1_data = list(((self.player1).serialize()).values())
-        # player2 = Player.get_player_info(self.player2 - 1)
         player2_data = list(((self.player2).serialize()).values())
         neutral_info = ["", "VS", "", "", "", ""]
         player_data = list(zip(player1_data, neutral_info, player2_data))

@@ -1,4 +1,5 @@
 from chess.views.view_player import ViewsPlayer
+from chess.views.view_menu import Views
 from chess.models.player import Player
 from chess.database.database import player_database
 
@@ -8,6 +9,7 @@ class PlayerController:
 
     def __init__(self):
         self.views = ViewsPlayer()
+        self.views_menu = Views()
 
     def start(self):
         """Display player menu and user choice"""
@@ -18,7 +20,9 @@ class PlayerController:
             # view players
             print("Player list")
             sorted_player = player_database.sort_players_by_name()
-            self.views.display_player_list(sorted_player)
+            
+            self.views_menu.display_list(
+                sorted_player, header="keys")
             self.start()
 
         if choice == "1":
@@ -30,7 +34,7 @@ class PlayerController:
         if choice == "2":
             # modifiy player
             print("modifiy player")
-            self.views.display_player_list(player_database)
+            self.views_menu.display_list(player_database.all(), header="keys")
             self.modify_player(player_database)
             self.start()
 
@@ -42,7 +46,8 @@ class PlayerController:
         """add a player to the player list"""
         player_data: dict = self.views.get_info_player()
         player: Player = Player(**player_data)
-        player.add_player_database()
+        player.id = player.add_player_database()
+        player.modify_player(player.id)
         self.start()
 
     def modify_player(self, player_table):
@@ -52,10 +57,9 @@ class PlayerController:
             print("you didn't validate the player you want to change")
             self.start()
         else:
-            player_to_modify: dict = player_table[id]
-            print(player_to_modify)
-            id = [id + 1]
-            player_data = self.views.get_info_player(player_to_modify)
-            player: Player = Player(**player_data)
-            player.modify_player(id)
+            player_to_modify: Player = Player.get_player_info(id)
+            player_to_modify_serialize = player_to_modify.serialize()
+            player_data = self.views.get_info_player(player_to_modify_serialize)
+            player_to_modify = Player(**player_data)
+            player_to_modify.modify_player(id)
             self.start()

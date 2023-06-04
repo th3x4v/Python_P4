@@ -21,10 +21,6 @@ class ViewsPlayer:
         choice_player_menu = input("choice: ")
         return choice_player_menu
 
-    def display_player_list(self, player_data):
-        table = tabulate(player_data, headers="keys", tablefmt="grid")
-        print(table)
-
     def get_info_player(self, player_to_modify: dict = None) -> "dict":
         """Interface to get a player information"""
         if player_to_modify == None:
@@ -38,7 +34,9 @@ class ViewsPlayer:
             player_data["birthdate"] = self.view_menu.get_user_entries(
                 "Date of birthday (DD/MM/YYYY): ", "date"
             )
-            player_data["player_INE"] = self.view_menu.get_user_entries("INE identification: ", "INE")
+            player_data["player_INE"] = self.view_menu.get_user_entries(
+                "INE identification: ", "INE"
+            )
         else:
             print("The player name you want to modify is: ")
             print(player_to_modify.get("Last Name"))
@@ -67,21 +65,19 @@ class ViewsPlayer:
             if player_data["birthdate"] == "":
                 player_data["birthdate"] = player_to_modify["Date of Birth"]
 
-            player_data["player_id"] = input(
+            player_data["player_INE"] = input(
                 "INE identification: "
-                + player_to_modify["Player ID"]
+                + player_to_modify["Player INE"]
                 + " (Press enter to keep) "
             )
-            if player_data["player_id"] == "":
-                player_data["player_id"] = player_to_modify["Player ID"]
+            if player_data["player_INE"] == "":
+                player_data["player_INE"] = player_to_modify["Player INE"]
 
         return player_data
 
     def get_modify_player(self):
         """Modify a player"""
         id = int(
-            input(
-                "what is the position in the list of the player you want to modify ? "
-            )
+            input("what is the 'id' in the list of the player you want to modify ? ")
         )
         return id
