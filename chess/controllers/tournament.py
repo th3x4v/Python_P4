@@ -82,7 +82,7 @@ class TournamentController:
         random.shuffle(player_tournament_list)
         player_tournament_data = []
         for player in player_tournament_list:
-            player_data: dict = {"player": player, "score": 0}
+            player_data: dict = {"player": Player.get_player_info(player), "score": 0}
             player_tournament_data.append(player_data)
         tournament.players = player_tournament_data
         tournament.rounds = []
@@ -153,7 +153,6 @@ class TournamentController:
 
         match_list = []
         for i in range(0, l, 2):
-            print(i)
             player_pairs = [
                 tournament.players[i]["player"],
                 tournament.players[i + 1]["player"],
@@ -183,7 +182,6 @@ class TournamentController:
                 list(reversed(player_pairs)) in match_played
             ):
                 match_played.append(player_pairs)
-
         return match_list, match_played
 
     def end_round(self, round: Round, player_list):
@@ -191,33 +189,40 @@ class TournamentController:
         for match in round.match_list:
             result = self.views.get_match_result(match)
             match.match_result = result
-            player1 = Player.get_player_info(match.player1 - 1)
-            player2 = Player.get_player_info(match.player2 - 1)
+            print(player_list)
+            # player1 = Player.get_player_info(match.player1 - 1)
+            # player2 = Player.get_player_info(match.player2 - 1)
             if result == "1":
                 # add result to global score
-                player1.score = player1.score + 1
-                player1.modify_player(int(player1.id))
+                match.player1.score = match.player1.score + 1
+                match.player1.modify_player(int(match.player1.id))
                 # add result to tournament
                 for player in player_list:
-                    if player["player"] == player1.id:
+                    print("debig")
+                    print(player)
+                    print("debig")
+                    print(player["player"])
+                    print("debig")
+                    print(match.player1)
+                    if player["player"] == match.player1:
                         player["score"] = player["score"] + 1
             elif result == "2":
-                player2.score = player2.score + 1
-                player2.modify_player(int(player2.id))
+                match.player2.score = match.player2.score + 1
+                match.player2.modify_player(int(match.player2.id))
                 # add result to tournament
                 for player in player_list:
-                    if player["player"] == player2.id:
+                    if player["player"] == match.player2:
                         player["score"] = player["score"] + 1
             else:
-                player1.score = player1.score + 0.5
-                player2.score = player2.score + 0.5
-                player1.modify_player(int(player1.id))
-                player2.modify_player(int(player2.id))
+                match.player1.score = match.player1.score + 0.5
+                match.player2.score = match.player2.score + 0.5
+                match.player1.modify_player(int(match.player1.id))
+                match.player2.modify_player(int(match.player2.id))
                 # add result to tournament
                 for player in player_list:
-                    if player["player"] == player1.id:
+                    if player["player"] == match.player1:
                         player["score"] = player["score"] + 0.5
-                    if player["player"] == player2.id:
+                    if player["player"] == match.player2:
                         player["score"] = player["score"] + 0.5
         round.end_date = "test"
         round.status = 1
