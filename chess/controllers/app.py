@@ -1,7 +1,7 @@
-from chess.views.view_menu import Views
 from chess.views.view_player import ViewsPlayer
 from chess.controllers.player import PlayerController
 from chess.controllers.tournament import TournamentController
+from chess.views.view_menu import Views
 
 
 class AppController:

@@ -30,17 +30,8 @@ class TournamentController:
             # Tournament list
             print("Tournament list")
             self.views_menu.display_list(
-                self.tournament_table(),
-                header=[
-                    "Name",
-                    "Location",
-                    "Start date",
-                    "End date",
-                    "Number of rounds",
-                    "Current round",
-                    "id",
-                    "director_notes",
-                ],
+                self.tournament_list(tournament_database.all())[0],
+                header=self.tournament_list(tournament_database.all())[1],
             )
             self.start()
 
@@ -52,14 +43,25 @@ class TournamentController:
         if choice == "2":
             # resume tournament
             print("Resume tournament")
-            tournament_list = []
-            for tournament in tournament_database.all():
-                print(tournament["name"])
-                tournament_list.append([tournament["name"]])
-            self.views.display_tournament_list(tournament_list)
-            id = self.views.get_current_tournament()
             tournaments = tournament_database.all()
-            tournament: Tournament = Tournament.unserialize(tournaments[id])
+            tournament_list = []
+            for tournament in tournaments:
+                current_round_num = int(tournament["current_round_num"])
+                if int(tournament["current_round_num"]) < int(
+                    tournament["num_rounds"]
+                ) or (
+                    int(tournament["current_round_num"])
+                    == int(tournament["num_rounds"])
+                    and tournament["rounds"][current_round_num - 1]["status"] == "0"
+                ):
+                    tournament_list.append(tournament)
+
+            self.views_menu.display_list(
+                self.tournament_list(tournament_list)[0],
+                header=self.tournament_list(tournament_list)[1],
+            )
+            id = self.views.get_current_tournament()
+            tournament: Tournament = Tournament.unserialize(tournaments[id - 1])
             self.start_tournament_manager(tournament, id)
 
         if choice == "3":
@@ -239,20 +241,31 @@ class TournamentController:
             # exit
             pass
 
-    def tournament_table(self):
+    def tournament_list(self, tournament_data_list):
         tournament_list = []
-        for tournament in tournament_database.all():
+        tournament_data_list
+        tournament_header = list(tournament_data_list[0].keys())
+        tournament_header_filer = [
+            tournament_header[i]
+            for i in range(len(tournament_header))
+            if i in (0, 1, 2, 3, 4, 5, 8, 9)
+        ]
+        for tournament in tournament_data_list:
             tournament_data = list(tournament.values())
-            tournament_data.pop(6)
-            tournament_data.pop(6)
-            tournament_list.append(tournament_data)
-        return tournament_list
+            tournament_data_filer = [
+                tournament_data[i]
+                for i in range(len(tournament_data))
+                if i in (0, 1, 2, 3, 4, 5, 8, 9)
+            ]
+            tournament_list.append(tournament_data_filer)
+
+        return tournament_list, tournament_header_filer
 
 
 if __name__ == "__main__":
     self = TournamentController()
-    tournament: Tournament = Tournament.get_tournament_info(0)
-    self.tournament_report(tournament)
+    # tournament: Tournament = Tournament.get_tournament_info(0)
+    # self.tournament_report(tournament)
     my_list = [
         ("Gabrielle", "", "Garcia"),
         ("Jessica", "VS", "Miguel"),
@@ -261,16 +274,6 @@ if __name__ == "__main__":
         (10.0, "", 22.0),
         (10, "", 3),
     ]
-    print(my_list[3])
-    result = [my_list[i] for i in range(5) if i in (0, 1, 3)]
-    newliste = []
-    for i in range(5):
-        if i == 0:
-            newliste.append(my_list[i])
-        if i == 1:
-            newliste.append(my_list[i])
-        if i == 3:
-            newliste.append(my_list[i])
-
-    print(newliste)
-    print(result)
+    self.views_menu.display_list(
+        self.tournament_list()[0], header=self.tournament_list()[1]
+    )
