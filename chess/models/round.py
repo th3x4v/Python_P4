@@ -12,7 +12,7 @@ class Round:
         self.name = name
         self.start_date = start_date
         self.end_date = end_date
-        self.match_list = match_list
+        self.match_list: list[Match] = match_list
         self.match_played = match_played
         self.status = status
 
@@ -48,7 +48,7 @@ class Round:
         )
 
     @classmethod
-    def get_round_info(cls, tournament: Tournament, id):
+    def get_round_info(cls, tournament: "Tournament", id):
         round_data = tournament.rounds[id]
         round: Round = Round.unserialize(round_data)
         return round

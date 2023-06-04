@@ -16,6 +16,7 @@ class ViewsTournament:
 
     def display_tournament_menu(self):
         print("\n*** tournament menu ***\n".upper())
+        print("0 - Tournament lists ")
         print("1 - Create a new tournament")
         print("2 - Resume tournament")
         print("3 - Back")
@@ -73,7 +74,9 @@ class ViewsTournament:
     def display_tournament_manager(self, tournament: Tournament):
         """Display of tournament manager"""
         print("\n*** tournament manager ***\n".upper())
-        self.display_tournament(tournament)
+        self.view_menu.display_list(
+            tournament.tournament_table()[0], header=tournament.tournament_table()[1]
+        )
         print("0 - Tournament reports ")
         print("1 - Continue tournament ")
         print("2 - ")
@@ -81,38 +84,12 @@ class ViewsTournament:
         choice_tournament_manager = input("choice: ")
         return choice_tournament_manager
 
-    def display_tournament(self, tournament: Tournament):
-        """Display of current tournament"""
-        tournament_table = [
-            [
-                tournament.name,
-                tournament.location,
-                tournament.start_date,
-                tournament.end_date,
-                tournament.num_rounds,
-                tournament.current_round_num,
-            ]
-        ]
-        header = [
-            "Name",
-            "Location",
-            "Starting date",
-            "Ending date",
-            "number of rounds",
-            "Current round",
-        ]
-        print(tabulate(tournament_table, header, tablefmt="grid"))
-
     def get_match_result(self, match: Match):
         """Get the match result"""
         print("Please, who is the winner of this match")
         # Match display
         player_data = match.match_table()
-        player_data.pop(-1)
-        player_data.pop(-1)
-        player_data.pop(2)
-        table = tabulate(player_data, headers=["1", "N", "2"], tablefmt="fancy_grid")
-        print(table)
+        self.view_menu.display_list(player_data, ["1", "N", "2"], (0, 1, 3))
         match_result = self.view_menu.get_user_entries("Result", "result")
         return match_result
 

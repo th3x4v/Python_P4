@@ -2,6 +2,7 @@ from tabulate import tabulate
 from chess.views.view_tournament import ViewsTournament
 from chess.models.player import Player
 from chess.views.view_player import ViewsPlayer
+from chess.views.view_menu import Views
 from chess.models.tournament import Tournament
 from chess.models.round import Round, Match
 from chess.database.database import (
@@ -18,6 +19,7 @@ class TournamentController:
     def __init__(self):
         self.views = ViewsTournament()
         self.playerviews = ViewsPlayer()
+        self.views_menu = Views()
 
     def start(self):
         """Display tournament menu and user choice"""
@@ -27,9 +29,25 @@ class TournamentController:
         if choice == "0":
             # Tournament list
             print("Tournament list")
+            table = tabulate(
+                self.tournament_table(),
+                headers=[
+                    "Name",
+                    "Location",
+                    "Start date",
+                    "End date",
+                    "Number of rounds",
+                    "Current round",
+                    "director_notes",
+                    "id",
+                ],
+                tablefmt="fancy_grid",
+            )
+            print(table)
+            self.start()
 
         if choice == "1":
-            # create a tournament
+            # create a tournaments
             print("Create a tournament")
             self.create_tournament(player_database.all())
 
@@ -134,42 +152,32 @@ class TournamentController:
             ].match_played
 
         match_list = []
-        for i in range(0, int(l / 2), 1):
+        for i in range(0, l, 2):
+            print(i)
             player_pairs = [
                 tournament.players[i]["player"],
-                tournament.players[l - i - 1]["player"],
+                tournament.players[i + 1]["player"],
             ]
-            n = i
-            if i != l / 2 - 1:  # check if it's not the last match to be set
-                while (player_pairs in match_played) or (
+            if i != l - 2:  # check if it's not the last match to be set
+                if (player_pairs in match_played) or (
                     list(reversed(player_pairs)) in match_played
                 ):
                     print("match already played")
-                    tournament_temp = tournament
                     player_pairs = [
-                        tournament_temp.players[i]["player"],
-                        tournament_temp.players[l - n - 2]["player"],
+                        tournament.players[i]["player"],
+                        tournament.players[i + 2]["player"],
                     ]
                     (
-                        tournament_temp.players[l - n - 2]["player"],
-                        tournament_temp.players[l - i - 1]["player"],
+                        tournament.players[i + 1],
+                        tournament.players[i + 2],
                     ) = (
-                        tournament_temp.players[l - i - 1]["player"],
-                        tournament_temp.players[l - n - 2]["player"],
+                        tournament.players[i + 2],
+                        tournament.players[i + 1],
                     )
-                    n += 1
-                    if n == int(l / 2) - i:
-                        print("break")
-                        break
-                    tournament = tournament_temp
             match: Match = Match(player1=player_pairs[0], player2=player_pairs[1])
             # display match
             player_data = match.match_table()
-            player_data.pop(-1)
-            player_data.pop(-1)
-            player_data.pop(2)
-            table = tabulate(player_data, tablefmt="fancy_grid")
-            print(table)
+            self.views_menu.display_list(player_data, data_select=(0, 1, 3))
             match_list.append(match)
             if not (player_pairs in match_played) or not (
                 list(reversed(player_pairs)) in match_played
@@ -221,28 +229,11 @@ class TournamentController:
 
         if choice == "0":
             #
-            print("Tournament list")
+            print("Tournament ")
 
         if choice == "1":
-            # tournament list
-            print("Tournament list")
-
-            table = tabulate(
-                self.tournament_table(),
-                headers=[
-                    "Name",
-                    "Location",
-                    "Start date",
-                    "End date",
-                    "Number of rounds",
-                    "Current round",
-                    "director_notes",
-                    "id",
-                ],
-                tablefmt="fancy_grid",
-            )
-            print(table)
-            # self.views.display_tournament_list(self.tournament_table())
+            # tournament
+            pass
 
         if choice == "2":
             # Report of a specific tournament
@@ -268,3 +259,24 @@ if __name__ == "__main__":
     self = TournamentController()
     tournament: Tournament = Tournament.get_tournament_info(0)
     self.tournament_report(tournament)
+    my_list = [
+        ("Gabrielle", "", "Garcia"),
+        ("Jessica", "VS", "Miguel"),
+        ("03/02/2001", "", "15/12/1990"),
+        ("JG00001", "", "CD67890"),
+        (10.0, "", 22.0),
+        (10, "", 3),
+    ]
+    print(my_list[3])
+    result = [my_list[i] for i in range(5) if i in (0, 1, 3)]
+    newliste = []
+    for i in range(5):
+        if i == 0:
+            newliste.append(my_list[i])
+        if i == 1:
+            newliste.append(my_list[i])
+        if i == 3:
+            newliste.append(my_list[i])
+
+    print(newliste)
+    print(result)

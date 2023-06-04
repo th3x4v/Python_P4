@@ -30,8 +30,6 @@ class Tournament:
         self.director_notes = director_notes
         self.id = id
 
-        # self.tournament_db = TinyDB("chess/models/tournament_database.json")
-
     def serialize(self) -> dict:
         """return a dictionnary"""
         rounds = [round.serialize() for round in self.rounds]
@@ -65,12 +63,11 @@ class Tournament:
             director_notes=serialized_tournament["director_notes"],
             id=serialized_tournament["id"],
         )
+        tournament.players = 
         tournament.rounds = [
             Round.unserialize(round_data)
             for round_data in serialized_tournament["rounds"]
         ]
-        print("tournament.players")
-        print(tournament.players)
         return tournament
 
     @classmethod
@@ -78,6 +75,27 @@ class Tournament:
         tournament_data = tournament_database.all()[id]
         tournament: Tournament = Tournament.unserialize(tournament_data)
         return tournament
+
+    def tournament_table(self):
+        tournament_table = [
+            [
+                self.name,
+                self.location,
+                self.start_date,
+                self.end_date,
+                self.num_rounds,
+                self.current_round_num,
+            ]
+        ]
+        header = [
+            "Name",
+            "Location",
+            "Starting date",
+            "Ending date",
+            "number of rounds",
+            "Current round",
+        ]
+        return tournament_table, header
 
     def add_tournament_database(self):
         """Add a tournament to the list"""

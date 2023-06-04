@@ -1,4 +1,5 @@
 import re
+from tabulate import tabulate
 
 
 class Views:
@@ -58,9 +59,29 @@ class Views:
                 user_entry = input(f"{data} : ")
         return user_entry
 
+    def display_list(self, data, header=[], data_select=None):
+        l = len(data)
+        if data_select == None:
+            data_select = range(l)
+        data_filter = [data[i] for i in range(l) if i in data_select]
+        table = tabulate(data_filter, headers=header, tablefmt="grid")
+        print(table)
+
 
 if __name__ == "__main__":
     views = Views()
     data = "test string"
     data_type = "result"
     print(views.get_user_entries(data, data_type))
+    data = [
+        ("Kim", "", "Chene"),
+        ("Jae", "VS", "Lin"),
+        ("29/09/1995", "", "17/08/1994"),
+        ("TY56432", "", "BF85325"),
+        (24.0, "", 21.5),
+        (5, "", 6),
+    ]
+    header = ["1", "N", "2"]
+    views.display_list(data)
+    views.display_list(data, header)
+    views.display_list(data, header, (0, 1, 3))
