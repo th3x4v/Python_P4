@@ -46,8 +46,6 @@ class Player:
         """Add a player to the list"""
         serialized_player: dict = self.serialize()
         id = self.table.save_db(serialized_player)
-        print("debug")
-        print(id)
         return id
 
     def find_player(self, id):

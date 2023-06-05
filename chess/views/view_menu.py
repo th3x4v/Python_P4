@@ -10,14 +10,25 @@ class Views:
     def __init__(self):
         pass
 
-    def display_main_menu(self):
-        print("\n*** Chess Manager ***\n".upper())
-        print("Main menu\n".upper())
-        print("1 - Manage players")
-        print("2 - Manage tournament")
-        print("3 - Quit the application")
-        choice_main_menu = input("choice: ")
-        return choice_main_menu
+    def display_menu(
+        self,
+        title1,
+        title2="",
+        choice0="",
+        choice1="",
+        choice2="",
+        choice3="",
+        choice4="",
+    ):
+        print(f"\n*** {title1} ***\n".upper())
+        print(f"{title2}\n".upper())
+        print(choice0)
+        print(choice1)
+        print(choice2)
+        print(choice3)
+        print(choice4)
+        choice_menu = input("choice: ")
+        return choice_menu
 
     def get_user_entries(self, data, data_type):
         """Interface to get a input from user"""

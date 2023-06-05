@@ -14,15 +14,20 @@ class PlayerController:
     def start(self):
         """Display player menu and user choice"""
 
-        choice = self.views.display_player_menu()
+        choice = self.views_menu.display_menu(
+            title1="player menu",
+            choice0="0 - Player list",
+            choice1="1 - Add a player",
+            choice2="2 - Modify a player",
+            choice3="3 - Back",
+        )
 
         if choice == "0":
             # view players
             print("Player list")
             sorted_player = player_database.sort_players_by_name()
-            
-            self.views_menu.display_list(
-                sorted_player, header="keys")
+
+            self.views_menu.display_list(sorted_player, header="keys")
             self.start()
 
         if choice == "1":

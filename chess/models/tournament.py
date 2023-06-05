@@ -1,5 +1,6 @@
 from chess.database.database import TinyTableManager, tournament_database
 from chess.models.player import Player
+from chess.views.view_menu import Views
 
 
 class Tournament:
@@ -30,6 +31,7 @@ class Tournament:
         self.players = players
         self.director_notes = director_notes
         self.id = id
+        self.views_menu = Views()
 
     def serialize(self) -> dict:
         """return a dictionnary"""
@@ -111,13 +113,14 @@ class Tournament:
     def add_tournament_database(self):
         """Add a tournament to the list"""
         serialized_tournament: dict = self.serialize()
-        print("debug1")
         print(serialized_tournament)
         id = self.table.save_db(serialized_tournament)
         return id
 
     def update_tournament_database(self, id):
         """update a tournament to the list"""
+        print("debug1")
+        print(id)
         serialized_tournament: dict = self.serialize()
         self.table.update_db(serialized_tournament, id)
 

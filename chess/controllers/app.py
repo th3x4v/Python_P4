@@ -19,7 +19,13 @@ class AppController:
         exit_requested = False
 
         while not exit_requested:
-            choice = self.views.display_main_menu()
+            choice = self.views.display_menu(
+                title1="Chess Manager",
+                title2="Main menu",
+                choice0="1 - Manage players",
+                choice1="2 - Manage tournament",
+                choice2="3 - Quit the application",
+            )
 
             if choice == "1":
                 # Player management

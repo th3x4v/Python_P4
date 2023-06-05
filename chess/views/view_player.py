@@ -12,15 +12,6 @@ class ViewsPlayer:
     def __init__(self):
         self.view_menu = Views()
 
-    def display_player_menu(self):
-        print("\n*** player menu ***\n".upper())
-        print("0 - Player list")
-        print("1 - Add a player to the global player list")
-        print("2 - Modify a player")
-        print("3 - Back")
-        choice_player_menu = input("choice: ")
-        return choice_player_menu
-
     def get_info_player(self, player_to_modify: dict = None) -> "dict":
         """Interface to get a player information"""
         if player_to_modify == None:

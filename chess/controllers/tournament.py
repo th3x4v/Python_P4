@@ -27,24 +27,22 @@ class TournamentController:
         choice = self.views.display_tournament_menu()
 
         if choice == "0":
-            # Tournament list
-            print("Tournament list")
-            self.views_menu.display_list(
-                self.tournament_list(tournament_database.all())[0],
-                header=self.tournament_list(tournament_database.all())[1],
-            )
+            # Reports
+            print("Reports")
+            self.reports()
             self.start()
 
         if choice == "1":
             # create a tournaments
             print("Create a tournament")
-            self.create_tournament(player_database.all())
+            self.create_tournament()
 
         if choice == "2":
             # resume tournament
             print("Resume tournament")
             tournaments = tournament_database.all()
             tournament_list = []
+            # filtering ongoing tournament only
             for tournament in tournaments:
                 current_round_num = int(tournament["current_round_num"])
                 if int(tournament["current_round_num"]) < int(
@@ -68,16 +66,16 @@ class TournamentController:
             # exit
             print("exit")
 
-    def create_tournament(self, player_table):
+    def create_tournament(self):
         """Tournament creation"""
         tournament_data: dict = self.views.get_tournament_info()
         tournament: Tournament = Tournament(**tournament_data)
-        self.add_player_tournament(player_table, tournament)
-        self.start()
+        self.add_player_tournament(tournament)
+        self.start_tournament_manager(tournament, tournament.id)
 
-    def add_player_tournament(self, player_table, tournament: Tournament):
+    def add_player_tournament(self, tournament: Tournament):
         """Add player to a tournament"""
-        self.playerviews.display_player_list(player_table)
+        self.views_menu.display_list(player_database.all(), header="keys")
         player_tournament_list: list = self.views.get_player_tournament_info()
         random.shuffle(player_tournament_list)
         player_tournament_data = []
@@ -86,7 +84,9 @@ class TournamentController:
             player_tournament_data.append(player_data)
         tournament.players = player_tournament_data
         tournament.rounds = []
-        tournament.add_tournament_database()
+        id = tournament.add_tournament_database()
+        tournament.id = id
+        tournament.update_tournament_database([id])
 
     def start_tournament_manager(self, tournament: Tournament, id):
         """Tournament manager"""
@@ -97,11 +97,12 @@ class TournamentController:
             # Tournament reports
             print("Display tournament reports")
             self.tournament_report(tournament)
-            tournament.sort_players_by_name()
-            self.playerviews.display_player_list(tournament.players)
 
         if choice == "1":
             # Continue the tournament
+            print("debug")
+            print(tournament.id)
+            print(id)
             if tournament.rounds == []:
                 print("next round")
                 self.next_round(tournament, id)
@@ -117,11 +118,11 @@ class TournamentController:
                         tournament.players, key=lambda x: x.get("score"), reverse=True
                     )
                     tournament.rounds[-1] = current_round
-                    tournament.update_tournament_database([id + 1])
+                    tournament.update_tournament_database([id])
             self.start_tournament_manager(tournament, id)
 
         if choice == "2":
-            # resume tournament
+            #
             print("test")
 
         if choice == "3":
@@ -138,7 +139,7 @@ class TournamentController:
             name=name, start_date=start_date, match_list=match[0], match_played=match[1]
         )
         tournament.rounds.append(round)
-        tournament.update_tournament_database([id + 1])
+        tournament.update_tournament_database([id])
 
     def set_match(self, tournament: Tournament):
         """Match creation"""
@@ -218,24 +219,74 @@ class TournamentController:
         round.end_date = "test"
         round.status = 1
 
-    def tournament_report(self, tournament: Tournament):
-        """tournament report choice"""
+    def reports(self):
+        """report choice"""
 
-        choice = self.views.display_tournament_report()
-
-        if choice == "0":
-            #
-            print("Tournament ")
-
+        choice = self.views_menu.display_menu(
+            title1="reports",
+            choice0="1 - Tournament reports",
+            choice1="2 - Player list",
+            choice2="3 - Quit the application",
+        )
         if choice == "1":
             # tournament
-            pass
+            self.tournament_report()
 
         if choice == "2":
             # Report of a specific tournament
             print("Tournament information")
             id = self.views.get_current_tournament()
             tournament: Tournament = Tournament.get_tournament_info(id)
+
+        if choice == "3":
+            # exit
+            pass
+
+    def tournament_report(self):
+        """tournament reports"""
+
+        choice = self.views_menu.display_menu(
+            title1="reports",
+            choice0="1 - Tournament list",
+            choice1="2 - Tournament information",
+            choice2="3 - Quit the application",
+        )
+
+        if choice == "1":
+            # tournament list
+            self.views_menu.display_list(
+                self.tournament_list(tournament_database.all())[0],
+                header=self.tournament_list(tournament_database.all())[1],
+            )
+
+        if choice == "2":
+            # Report of a specific tournament
+            print("Tournament information")
+            id = self.views.get_current_tournament()
+            tournament: Tournament = Tournament.get_tournament_info(id)
+            self.tournament_information(tournament)
+
+        if choice == "3":
+            # exit
+            pass
+
+    def tournament_information(self, tournament):
+        """tournament information"""
+
+        choice = self.views_menu.display_menu(
+            title1="Tournament information",
+            choice0="1 - Tournament rounds",
+            choice1="2 - Tournament players",
+            choice2="3 - Quit the application",
+        )
+
+        if choice == "1":
+            # tournament rounds
+            pass
+
+        if choice == "2":
+            # Tournament players
+            pass
 
         if choice == "3":
             # exit

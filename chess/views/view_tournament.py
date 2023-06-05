@@ -96,8 +96,17 @@ class ViewsTournament:
     def display_tournament_report(self):
         """Display of tournament reports"""
         print("\n*** tournament reports ***\n".upper())
-        print("1 - Tournament lists ")
-        print("2 - Tournament info ")
+        print("1 - Tournament info ")
+        print("2 - Tournament players ")
+        print("3 - Back")
+        choice_tournament_report = input("choice: ")
+        return choice_tournament_report
+    
+    def display_tournament_info(self):
+        """Display of tournament reports"""
+        print("\n*** tournament reports ***\n".upper())
+        print("1 - Tournament info ")
+        print("2 - Tournament round info ")
         print("3 - Back")
         choice_tournament_report = input("choice: ")
         return choice_tournament_report
@@ -107,4 +116,3 @@ if __name__ == "__main__":
     match: Match = Match(1, 2)
     views = ViewsTournament()
     views.get_match_result(match)
-    views.display_tournament_list(views.tournament_table())
