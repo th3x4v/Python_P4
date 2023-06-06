@@ -119,8 +119,6 @@ class Tournament:
 
     def update_tournament_database(self, id):
         """update a tournament to the list"""
-        print("debug1")
-        print(id)
         serialized_tournament: dict = self.serialize()
         self.table.update_db(serialized_tournament, id)
 

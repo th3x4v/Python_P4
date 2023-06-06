@@ -38,36 +38,3 @@ player_database: TinyTableManager = TinyTableManager(db_p.table("Players"))
 
 db_t = TinyDB("chess/database/tournament_database.json")
 tournament_database: TinyTableManager = TinyTableManager(db_t.table("Tournaments"))
-
-
-"""
-    @staticmethod
-    def load_tournament_db():
-       # Load tournament database
-
-        @return: list of tournaments
-        
-        db = TinyDB("chess/models/tournament_database.json")
-        db.all()
-        tournaments_list = []
-        for item in db:
-            tournaments_list.append(item)
-
-        return tournaments_list
-
-    @staticmethod
-    def load_player_db():
-        Load player database
-
-        @return: list of players
-        
-        db = TinyDB("chess/database/player_database.json")
-        player_database = db.table("Players")
-
-        # player_database : TinyTableManager = TinyTableManager(db.table("Players"))
-                db.all()
-        players = []
-        for item in players_db:
-            players.append(item
-        return player_database
-"""

@@ -53,11 +53,10 @@ class Round:
             status=data["status"],
         )
 
-    @classmethod
-    def get_round_info(cls, tournament: "Tournament", id):
-        round_data = tournament.rounds[id]
-        round: Round = Round.unserialize(round_data)
-        return round
+    def round_table(self):
+        round_table = [self.name, self.start_date, self.end_date, self.status]
+        header = ["Name", "Start date", "End date", "Status"]
+        return round_table, header
 
 
 class Match:
@@ -83,12 +82,6 @@ class Match:
             player2=Player.get_player_info(data["player2"]),
             match_result=data["match_result"],
         )
-
-    @classmethod
-    def get_match_info(cls, round: Round, id):
-        match_data = round.match_list[id - 1]
-        match: Match = Match.unserialize(match_data)
-        return match
 
     def match_table(self):
         player1_data = list(((self.player1).serialize()).values())

@@ -61,7 +61,17 @@ class ViewsTournament:
         """resume a tournament"""
         id = int(
             self.view_menu.get_user_entries(
-                "what is the position in the list of the tournament you want to resume ? ",
+                "what is the 'id' in the list of the tournament you want to resume ? ",
+                "int",
+            )
+        )
+        return id
+
+    def get_round_number(self):
+        """Select a round"""
+        id = int(
+            self.view_menu.get_user_entries(
+                "what is the 'id' in the list of the round you want to get ? (press 0 to go back)",
                 "int",
             )
         )
@@ -101,7 +111,7 @@ class ViewsTournament:
         print("3 - Back")
         choice_tournament_report = input("choice: ")
         return choice_tournament_report
-    
+
     def display_tournament_info(self):
         """Display of tournament reports"""
         print("\n*** tournament reports ***\n".upper())

@@ -1,4 +1,3 @@
-from tabulate import tabulate
 from chess.views.view_tournament import ViewsTournament
 from chess.models.player import Player
 from chess.views.view_player import ViewsPlayer
@@ -10,7 +9,7 @@ from chess.database.database import (
     tournament_database,
 )
 import random
-from datetime import date, datetime
+from datetime import datetime
 
 
 class TournamentController:
@@ -24,7 +23,15 @@ class TournamentController:
     def start(self):
         """Display tournament menu and user choice"""
 
-        choice = self.views.display_tournament_menu()
+        # choice = self.views.display_tournament_menu()
+
+        choice = self.views_menu.display_menu(
+            title1="tournament menu",
+            choice0="0 - Tournament reports ",
+            choice1="1 - Create a new tournament ",
+            choice2="2 - Resume tournament",
+            choice3="3 - Back",
+        )
 
         if choice == "0":
             # Reports
@@ -91,18 +98,23 @@ class TournamentController:
     def start_tournament_manager(self, tournament: Tournament, id):
         """Tournament manager"""
 
-        choice = self.views.display_tournament_manager(tournament)
+        # choice = self.views.display_tournament_manager(tournament)
 
+        choice = self.views_menu.display_menu(
+            title1="tournament manager",
+            choice0="0 - Tournament report ",
+            choice1="1 - Continue tournament ",
+            choice2="3 - Back",
+            table=tournament.tournament_table(),
+        )
         if choice == "0":
             # Tournament reports
             print("Display tournament reports")
-            self.tournament_report(tournament)
+            self.tournament_information(tournament)
+            self.start_tournament_manager(tournament, id)
 
         if choice == "1":
             # Continue the tournament
-            print("debug")
-            print(tournament.id)
-            print(id)
             if tournament.rounds == []:
                 print("next round")
                 self.next_round(tournament, id)
@@ -131,15 +143,27 @@ class TournamentController:
             self.start()
 
     def next_round(self, tournament: Tournament, id):
-        tournament.current_round_num = tournament.current_round_num + 1
-        name = "Round" + str(tournament.current_round_num)
-        start_date = ""
-        match = self.set_match(tournament)
-        round: Round = Round(
-            name=name, start_date=start_date, match_list=match[0], match_played=match[1]
-        )
-        tournament.rounds.append(round)
-        tournament.update_tournament_database([id])
+        # checking if the tournament is over
+        if int(
+            tournament.current_round_num == int(tournament.num_rounds)
+            and tournament.rounds[int(tournament.current_round_num) - 1].status == 1
+        ):
+            print("The tournament is over")
+
+        else:
+            tournament.current_round_num = tournament.current_round_num + 1
+            name = "Round" + str(tournament.current_round_num)
+            current_date = datetime.now()
+            start_date = current_date.strftime("%d/%m/%Y")
+            match = self.set_match(tournament)
+            round: Round = Round(
+                name=name,
+                start_date=start_date,
+                match_list=match[0],
+                match_played=match[1],
+            )
+            tournament.rounds.append(round)
+            tournament.update_tournament_database([id])
 
     def set_match(self, tournament: Tournament):
         """Match creation"""
@@ -216,7 +240,8 @@ class TournamentController:
                         player["score"] = player["score"] + 0.5
                     if player["player"] == match.player2:
                         player["score"] = player["score"] + 0.5
-        round.end_date = "test"
+        current_date = datetime.now()
+        round.end_date = current_date.strftime("%d/%m/%Y")
         round.status = 1
 
     def reports(self):
@@ -226,7 +251,7 @@ class TournamentController:
             title1="reports",
             choice0="1 - Tournament reports",
             choice1="2 - Player list",
-            choice2="3 - Quit the application",
+            choice2="3 - Back",
         )
         if choice == "1":
             # tournament
@@ -234,9 +259,7 @@ class TournamentController:
 
         if choice == "2":
             # Report of a specific tournament
-            print("Tournament information")
-            id = self.views.get_current_tournament()
-            tournament: Tournament = Tournament.get_tournament_info(id)
+            print("Player list")
 
         if choice == "3":
             # exit
@@ -249,7 +272,7 @@ class TournamentController:
             title1="reports",
             choice0="1 - Tournament list",
             choice1="2 - Tournament information",
-            choice2="3 - Quit the application",
+            choice2="3 - Back",
         )
 
         if choice == "1":
@@ -258,39 +281,85 @@ class TournamentController:
                 self.tournament_list(tournament_database.all())[0],
                 header=self.tournament_list(tournament_database.all())[1],
             )
+            self.tournament_report()
 
         if choice == "2":
             # Report of a specific tournament
             print("Tournament information")
+            self.views_menu.display_list(
+                self.tournament_list(tournament_database.all())[0],
+                header=self.tournament_list(tournament_database.all())[1],
+            )
             id = self.views.get_current_tournament()
-            tournament: Tournament = Tournament.get_tournament_info(id)
+            tournament: Tournament = Tournament.get_tournament_info(id - 1)
             self.tournament_information(tournament)
+            self.tournament_report()
 
         if choice == "3":
             # exit
             pass
 
-    def tournament_information(self, tournament):
+    def tournament_information(self, tournament: Tournament):
         """tournament information"""
 
         choice = self.views_menu.display_menu(
             title1="Tournament information",
             choice0="1 - Tournament rounds",
             choice1="2 - Tournament players",
-            choice2="3 - Quit the application",
+            choice2="3 - Back",
+            table=tournament.tournament_table(),
         )
 
         if choice == "1":
             # tournament rounds
-            pass
+            round_list = []
+            for round in tournament.rounds:
+                round_data = round.round_table()
+                round_list.append(round_data[0])
+                header = round_data[1]
+
+            self.views_menu.display_list(round_list, header)
+
+            id = self.views.get_round_number()
+            if id != 0:
+                round: Round = tournament.rounds[id - 1]
+                self.match_information(round)
+            else:
+                pass
 
         if choice == "2":
             # Tournament players
-            pass
+            player_list = []
+            for player in tournament.players:
+                player_data = list((player["player"].serialize()).values())
+                player_data.pop(-1)
+                player_data.pop(-1)
+                player_data.append(player["score"])
+                player_list.append(player_data)
+                player_list_sorted = sorted(player_list, key=lambda x: x[0])
+            self.views_menu.display_list(
+                player_list_sorted,
+                header=["Last name", "First name", "Date of birth", "INE", "Score"],
+            )
 
         if choice == "3":
             # exit
             pass
+
+    def match_information(self, round: Round):
+        """match information"""
+        for match in round.match_list:
+            player_data = match.match_table()
+            if match.match_result == "1":
+                result = ["WINNER", "", ""]
+            if match.match_result == "2":
+                result = ["", "", "WINNER"]
+            if match.match_result == "N":
+                result = ["", "DRAW", ""]
+
+            self.views_menu.display_list(
+                player_data, header=result, data_select=(0, 1, 3)
+            )
 
     def tournament_list(self, tournament_data_list):
         tournament_list = []

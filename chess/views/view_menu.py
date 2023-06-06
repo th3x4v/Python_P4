@@ -19,8 +19,11 @@ class Views:
         choice2="",
         choice3="",
         choice4="",
+        table=None,
     ):
         print(f"\n*** {title1} ***\n".upper())
+        if table != None:
+            self.display_list(table[0], header=table[1])
         print(f"{title2}\n".upper())
         print(choice0)
         print(choice1)
