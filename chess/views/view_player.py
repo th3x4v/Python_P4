@@ -1,7 +1,4 @@
-from tabulate import tabulate
-from chess.models.player import Player
 from chess.views.view_menu import Views
-import json
 
 
 class ViewsPlayer:
@@ -14,7 +11,7 @@ class ViewsPlayer:
 
     def get_info_player(self, player_to_modify: dict = None) -> "dict":
         """Interface to get a player information"""
-        if player_to_modify == None:
+        if player_to_modify is None:
             player_data = {}
             player_data["last_name"] = self.view_menu.get_user_entries(
                 "Last name: ", "string"

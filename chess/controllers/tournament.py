@@ -102,18 +102,18 @@ class TournamentController:
 
         choice = self.views_menu.display_menu(
             title1="tournament manager",
-            choice0="0 - Tournament report ",
-            choice1="1 - Continue tournament ",
+            choice0="1 - Tournament report ",
+            choice1="2 - Continue tournament ",
             choice2="3 - Back",
             table=tournament.tournament_table(),
         )
-        if choice == "0":
+        if choice == "1":
             # Tournament reports
             print("Display tournament reports")
             self.tournament_information(tournament)
             self.start_tournament_manager(tournament, id)
 
-        if choice == "1":
+        if choice == "2":
             # Continue the tournament
             if tournament.rounds == []:
                 print("next round")
@@ -149,6 +149,7 @@ class TournamentController:
             and tournament.rounds[int(tournament.current_round_num) - 1].status == 1
         ):
             print("The tournament is over")
+            self.start()
 
         else:
             tournament.current_round_num = tournament.current_round_num + 1
@@ -168,7 +169,7 @@ class TournamentController:
     def set_match(self, tournament: Tournament):
         """Match creation"""
         print("The matches of the round will be: ")
-        l = len(tournament.players)
+        lengh = len(tournament.players)
         if tournament.current_round_num == 1:
             match_played = []
         else:
@@ -177,12 +178,12 @@ class TournamentController:
             ].match_played
 
         match_list = []
-        for i in range(0, l, 2):
+        for i in range(0, lengh, 2):
             player_pairs = [
                 tournament.players[i]["player"],
                 tournament.players[i + 1]["player"],
             ]
-            if i != l - 2:  # check if it's not the last match to be set
+            if i != lengh - 2:  # check if it's not the last match to be set
                 if (player_pairs in match_played) or (
                     list(reversed(player_pairs)) in match_played
                 ):
@@ -312,20 +313,21 @@ class TournamentController:
 
         if choice == "1":
             # tournament rounds
-            round_list = []
-            for round in tournament.rounds:
-                round_data = round.round_table()
-                round_list.append(round_data[0])
-                header = round_data[1]
-
-            self.views_menu.display_list(round_list, header)
-
-            id = self.views.get_round_number()
-            if id != 0:
-                round: Round = tournament.rounds[id - 1]
-                self.match_information(round)
+            if tournament.rounds == []:
+                print("The tournament have not started yes!")
             else:
-                pass
+                round_list = []
+                for round in tournament.rounds:
+                    round_data = round.round_table()
+                    round_list.append(round_data[0])
+                    header = round_data[1]
+
+                self.views_menu.display_list(round_list, header)
+
+                id = self.views.get_round_number()
+                if id != 0:
+                    round: Round = tournament.rounds[id - 1]
+                    self.match_information(round)
 
         if choice == "2":
             # Tournament players
@@ -350,6 +352,8 @@ class TournamentController:
         """match information"""
         for match in round.match_list:
             player_data = match.match_table()
+            if match.match_result is None:
+                result = ["", "TO PLAY", ""]
             if match.match_result == "1":
                 result = ["WINNER", "", ""]
             if match.match_result == "2":

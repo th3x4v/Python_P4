@@ -58,7 +58,7 @@ class PlayerController:
     def modify_player(self, player_table):
         """modify a player in the player list"""
         id = self.views.get_modify_player()
-        if id == None:
+        if id is None:
             print("you didn't validate the player you want to change")
             self.start()
         else:

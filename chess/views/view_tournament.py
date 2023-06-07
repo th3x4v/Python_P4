@@ -1,9 +1,7 @@
 from tabulate import tabulate
 from chess.models.tournament import Tournament
-from chess.models.round import Round, Match
-from chess.database.database import tournament_database
+from chess.models.round import Match
 from chess.views.view_menu import Views
-from chess.models.player import Player
 
 
 class ViewsTournament:
@@ -71,7 +69,7 @@ class ViewsTournament:
         """Select a round"""
         id = int(
             self.view_menu.get_user_entries(
-                "what is the 'id' in the list of the round you want to get ? (press 0 to go back)",
+                "what is the number of the round you want to get ? (press 0 to go back)",
                 "int",
             )
         )

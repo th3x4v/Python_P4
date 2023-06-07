@@ -1,4 +1,3 @@
-from chess.models.tournament import Tournament
 from chess.models.player import Player
 
 

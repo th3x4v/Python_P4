@@ -43,4 +43,3 @@ class AppController:
                 # exit
                 exit_requested = True
                 print("exit")
-                break

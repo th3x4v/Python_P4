@@ -22,7 +22,7 @@ class Views:
         table=None,
     ):
         print(f"\n*** {title1} ***\n".upper())
-        if table != None:
+        if table is not None:
             self.display_list(table[0], header=table[1])
         print(f"{title2}\n".upper())
         print(choice0)
@@ -74,10 +74,10 @@ class Views:
         return user_entry
 
     def display_list(self, data, header=[], data_select=None):
-        l = len(data)
-        if data_select == None:
-            data_select = range(l)
-        data_filter = [data[i] for i in range(l) if i in data_select]
+        lengh = len(data)
+        if data_select is None:
+            data_select = range(lengh)
+        data_filter = [data[i] for i in range(lengh) if i in data_select]
         table = tabulate(data_filter, headers=header, tablefmt="grid")
         print(table)
 
