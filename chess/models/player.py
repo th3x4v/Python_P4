@@ -14,7 +14,7 @@ class Player:
         self.score = score
         self.id = id
 
-    def serialize(self)-> dict:
+    def serialize(self) -> dict:
         """return a dictionnary"""
         serialized_player = {
             "Last Name": self.last_name,

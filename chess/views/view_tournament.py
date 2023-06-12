@@ -1,5 +1,4 @@
 from tabulate import tabulate
-from chess.models.tournament import Tournament
 from chess.models.round import Match
 from chess.views.view_menu import Views
 
@@ -36,7 +35,7 @@ class ViewsTournament:
         return player_tournament
 
     def get_player_tournament_info(self) -> list:
-        
+        """tournament selection"""
         player_list: list = []
         print("Put the id of the player who will participate to the tournament ")
         add_player = self.view_menu.get_user_entries(
