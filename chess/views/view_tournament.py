@@ -12,15 +12,6 @@ class ViewsTournament:
     def __init__(self):
         self.view_menu = Views()
 
-    def display_tournament_menu(self):
-        print("\n*** tournament menu ***\n".upper())
-        print("0 - Tournament lists ")
-        print("1 - Create a new tournament")
-        print("2 - Resume tournament")
-        print("3 - Back")
-        choice_tournament_menu = input("choice: ")
-        return choice_tournament_menu
-
     def get_tournament_info(self) -> dict:
         """Interface to get tournament information"""
         player_tournament = {}
@@ -45,6 +36,7 @@ class ViewsTournament:
         return player_tournament
 
     def get_player_tournament_info(self) -> list:
+        
         player_list: list = []
         print("Put the id of the player who will participate to the tournament ")
         add_player = self.view_menu.get_user_entries(
@@ -79,19 +71,6 @@ class ViewsTournament:
         table = tabulate(tournament_data, tablefmt="grid", showindex="always")
         print(table)
 
-    def display_tournament_manager(self, tournament: Tournament):
-        """Display of tournament manager"""
-        print("\n*** tournament manager ***\n".upper())
-        self.view_menu.display_list(
-            tournament.tournament_table()[0], header=tournament.tournament_table()[1]
-        )
-        print("0 - Tournament reports ")
-        print("1 - Continue tournament ")
-        print("2 - ")
-        print("3 - Back")
-        choice_tournament_manager = input("choice: ")
-        return choice_tournament_manager
-
     def get_match_result(self, match: Match):
         """Get the match result"""
         print("Please, who is the winner of this match")
@@ -100,24 +79,6 @@ class ViewsTournament:
         self.view_menu.display_list(player_data, ["1", "N", "2"], (0, 1, 3))
         match_result = self.view_menu.get_user_entries("Result", "result")
         return match_result
-
-    def display_tournament_report(self):
-        """Display of tournament reports"""
-        print("\n*** tournament reports ***\n".upper())
-        print("1 - Tournament info ")
-        print("2 - Tournament players ")
-        print("3 - Back")
-        choice_tournament_report = input("choice: ")
-        return choice_tournament_report
-
-    def display_tournament_info(self):
-        """Display of tournament reports"""
-        print("\n*** tournament reports ***\n".upper())
-        print("1 - Tournament info ")
-        print("2 - Tournament round info ")
-        print("3 - Back")
-        choice_tournament_report = input("choice: ")
-        return choice_tournament_report
 
 
 if __name__ == "__main__":

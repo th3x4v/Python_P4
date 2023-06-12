@@ -50,7 +50,6 @@ class Tournament:
             "current_round_num": self.current_round_num,
             "rounds": rounds,
             "players": players,
-            "id": self.id,
             "director_notes": self.director_notes,
         }
         return serialized_tournament
@@ -68,7 +67,6 @@ class Tournament:
             num_rounds=serialized_tournament["num_rounds"],
             current_round_num=serialized_tournament["current_round_num"],
             director_notes=serialized_tournament["director_notes"],
-            id=serialized_tournament["id"],
         )
         tournament.players = [
             {
@@ -85,11 +83,14 @@ class Tournament:
 
     @classmethod
     def get_tournament_info(cls, id):
-        tournament_data = tournament_database.all()[id]
+        """Creation of a tournament object"""
+        # tournament_data = tournament_database.all()[id]
+        tournament_data = tournament_database.get(id)
         tournament: Tournament = Tournament.unserialize(tournament_data)
         return tournament
 
     def tournament_table(self):
+        """creation of tournament table for display purpose"""
         tournament_table = [
             [
                 self.name,
@@ -113,7 +114,6 @@ class Tournament:
     def add_tournament_database(self):
         """Add a tournament to the list"""
         serialized_tournament: dict = self.serialize()
-        print(serialized_tournament)
         id = self.table.save_db(serialized_tournament)
         return id
 
@@ -121,13 +121,6 @@ class Tournament:
         """update a tournament to the list"""
         serialized_tournament: dict = self.serialize()
         self.table.update_db(serialized_tournament, id)
-
-    def find_tournament(self, id):
-        return self.table.find(doc_id=id)
-
-    def sort_players_by_score(self):
-        """Sort players by score (descending)"""
-        self.players = sorted(self.players, key=lambda x: x.get("score"), reverse=True)
 
     def sort_players_by_name(self):
         """Sort players by score (descending)"""

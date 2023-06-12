@@ -14,32 +14,34 @@ class Player:
         self.score = score
         self.id = id
 
-    def serialize(self):
+    def serialize(self)-> dict:
+        """return a dictionnary"""
         serialized_player = {
             "Last Name": self.last_name,
             "First Name": self.first_name,
             "Date of Birth": self.birthdate,
             "Player INE": self.player_INE,
             "Score": self.score,
-            "id": self.id,
         }
         return serialized_player
 
     @classmethod
     def unserialize(cls, serialized_player):
+        """Unserialize player data"""
         return cls(
             last_name=serialized_player["Last Name"],
             first_name=serialized_player["First Name"],
             birthdate=serialized_player["Date of Birth"],
             player_INE=serialized_player["Player INE"],
             score=serialized_player["Score"],
-            id=serialized_player["id"],
         )
 
     @classmethod
-    def get_player_info(cls, id):
-        player_data = player_database.all()[id - 1]
+    def get_player_info(self, id):
+        """Get the player info from the database"""
+        player_data = self.table.get(id)
         player: Player = Player.unserialize(player_data)
+        player.id = id
         return player
 
     def add_player_database(self):
@@ -48,10 +50,7 @@ class Player:
         id = self.table.save_db(serialized_player)
         return id
 
-    def find_player(self, id):
-        return self.table.find(doc_id=id)
-
-    def modify_player(self, id):
+    def update_player(self, id):
         """Modify a player in the list"""
         serialized_player: dict = self.serialize()
         self.table.update_db(serialized_player, [id])

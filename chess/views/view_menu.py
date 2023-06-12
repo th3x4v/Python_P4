@@ -74,12 +74,17 @@ class Views:
         return user_entry
 
     def display_list(self, data, header=[], data_select=None):
+        """Display a list selecting data"""
         lengh = len(data)
         if data_select is None:
             data_select = range(lengh)
         data_filter = [data[i] for i in range(lengh) if i in data_select]
         table = tabulate(data_filter, headers=header, tablefmt="grid")
         print(table)
+
+    def display_message(self, message):
+        """Simple display"""
+        print(message)
 
 
 if __name__ == "__main__":

@@ -16,9 +16,6 @@ class TinyTableManager:
         """update a table"""
         self.table.update(serialized_data, doc_ids=id)
 
-    def find(self, id):
-        return self.table.get(doc_id=id)
-
     def all(self) -> list:
         """Return all records of the table"""
         records = self.table.all()
@@ -30,6 +27,13 @@ class TinyTableManager:
     def sort_players_by_name(self):
         """Sort players by name"""
         return sorted(self.table, key=lambda x: x["Last Name"])
+
+    def get(self, id):
+        """return one record of the table"""
+        record = self.table.get(doc_id=id)
+        if record is not None:
+            record["id"] = record.doc_id
+        return record
 
 
 db_p = TinyDB("chess/database/player_database.json")

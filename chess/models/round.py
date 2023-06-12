@@ -53,8 +53,9 @@ class Round:
         )
 
     def round_table(self):
+        """return a table for display purpose"""
         round_table = [self.name, self.start_date, self.end_date, self.status]
-        header = ["Name", "Start date", "End date", "Status"]
+        header = ["Name", "Start date", "End date", "Status(1=ended)"]
         return round_table, header
 
 
@@ -83,6 +84,7 @@ class Match:
         )
 
     def match_table(self):
+        """return a table for display purpose"""
         player1_data = list(((self.player1).serialize()).values())
         player2_data = list(((self.player2).serialize()).values())
         neutral_info = ["", "VS", "", "", "", ""]

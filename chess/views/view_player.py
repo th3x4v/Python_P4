@@ -9,7 +9,7 @@ class ViewsPlayer:
     def __init__(self):
         self.view_menu = Views()
 
-    def get_info_player(self, player_to_modify: dict = None) -> "dict":
+    def entry_info_player(self, player_to_modify: dict = None) -> "dict":
         """Interface to get a player information"""
         if player_to_modify is None:
             player_data = {}
@@ -63,7 +63,7 @@ class ViewsPlayer:
 
         return player_data
 
-    def get_modify_player(self):
+    def entry_modify_player(self):
         """Modify a player"""
         id = int(
             input("what is the 'id' in the list of the player you want to modify ? ")
