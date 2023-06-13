@@ -24,25 +24,20 @@ class PlayerController:
             )
             if choice == "0":
                 # view players
-                print("Player list")
                 sorted_player = player_database.sort_players_by_name()
-
                 self.views_menu.display_list(sorted_player, header="keys")
 
             elif choice == "1":
                 # Add players
-                print("Add players")
                 self.add_player()
 
             elif choice == "2":
                 # modifiy player
-                print("modifiy player")
                 self.views_menu.display_list(player_database.all(), header="keys")
                 self.modify_player(player_database)
 
             elif choice == "3":
                 # exit
-                print("exit")
                 exit_requested = True
 
     def add_player(self):
@@ -55,7 +50,9 @@ class PlayerController:
         """modify a player in the player list"""
         id = self.views.entry_modify_player()
         if id is None:
-            print("you didn't validate the player you want to change")
+            self.views_menu.display_message(
+                "you didn't validate the player you want to change"
+            )
         else:
             player_to_modify: Player = Player.get_player_info(id)
             player_to_modify_serialize = player_to_modify.serialize()

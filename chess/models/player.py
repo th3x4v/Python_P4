@@ -21,7 +21,7 @@ class Player:
             "First Name": self.first_name,
             "Date of Birth": self.birthdate,
             "Player INE": self.player_INE,
-            "Score": self.score,
+            "Global Score": self.score,
         }
         return serialized_player
 
@@ -33,7 +33,7 @@ class Player:
             first_name=serialized_player["First Name"],
             birthdate=serialized_player["Date of Birth"],
             player_INE=serialized_player["Player INE"],
-            score=serialized_player["Score"],
+            score=serialized_player["Global Score"],
         )
 
     @classmethod

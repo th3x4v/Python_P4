@@ -86,7 +86,9 @@ class TournamentController:
             player_tournament_data.append(player_data)
         tournament.players = player_tournament_data
         tournament.rounds = []
-        tournament.add_tournament_database()
+        id = tournament.add_tournament_database()
+        tournament.id = id
+        self.start_tournament_manager(tournament, id)
 
     def start_tournament_manager(self, tournament: Tournament, id):
         """Tournament manager"""
@@ -232,8 +234,8 @@ class TournamentController:
         while not exit_requested:
             choice = self.views_menu.display_menu(
                 title1="reports",
-                choice0="1 - Tournament reports",
-                choice1="2 - Player list",
+                choice0="1 - Tournament",
+                choice1="2 - Player",
                 choice2="3 - Back",
             )
             if choice == "1":
@@ -318,7 +320,6 @@ class TournamentController:
                 player_list = []
                 for player in tournament.players:
                     player_data = list((player["player"].serialize()).values())
-                    player_data.pop(-1)
                     player_data.pop(-1)
                     player_data.append(player["score"])
                     player_list.append(player_data)

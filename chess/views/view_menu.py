@@ -84,7 +84,9 @@ class Views:
 
     def display_message(self, message):
         """Simple display"""
+        print()
         print(message)
+        print()
 
 
 if __name__ == "__main__":
