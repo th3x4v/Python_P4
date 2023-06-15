@@ -32,6 +32,16 @@ You can install an external environment via the command
 ```bash
 pip install venv
 ```
+Activate the environment via the command:
+- On Mac and Linux, 
+```bash
+source venv/bin/activate
+```
+- On Windows,
+```bash
+venv\Scripts\activate.bat
+```
+
 in the terminal, then enter the command:
 
 ```bash
